@@ -1,8 +1,8 @@
 import argparse
 import sys
 from subprocess import call
-from scripts import compare_tsv
-from scripts import compare_yml
+from scripts import run_compare_tsv
+from scripts import run_compare_yml
 
 def define_parser():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -14,14 +14,14 @@ def define_parser():
         help="Compare tsv files",
         add_help=False
     )
-    compare_tsv_parser.set_defaults(func=compare_tsv.main)
+    compare_tsv_parser.set_defaults(func=run_compare_tsv.main)
 
     compare_yml_parser = subparsers.add_parser(
         "compare-yml",
         help="Compare yml files",
         add_help=False
     )
-    compare_yml_parser.set_defaults(func=compare_yml.main)
+    compare_yml_parser.set_defaults(func=run_compare_yml.main)
 
     return parser
 
