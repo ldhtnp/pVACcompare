@@ -1,6 +1,7 @@
 import argparse
 from scripts.compare_tsv import CompareTSV
 
+
 def main(args):
     parser = argparse.ArgumentParser(description="Compare two TSV files and output differences.")
     parser.add_argument("input_file1", help="Path to the first TSV file")
@@ -12,7 +13,7 @@ def main(args):
     file2_path = parsed_args.input_file2
     output_path = parsed_args.output_file
 
-    # Susanna stated number of variants, best peptide selected, best transcript select, and tier
+    # Number of variants, best peptide selected, best transcript select, and tier most important
     # TODO: Add this as a parameter to the command?
     columns_to_compare = ['ID', 'Best Peptide', 'Tier']
 
@@ -21,9 +22,11 @@ def main(args):
     comparer.sort_rows()
 
     if (comparer.df1.shape == comparer.df2.shape):
-        comparer.compare_dataframes()
+        comparer.generate_comparison_report()
     else: # Number of rows is not equal
-        comparer.drop_additional_rows()
+        comparer.make_rows_equal()
+        comparer.generate_comparison_report()
+
 
 if __name__ == "__main__":
     import sys
