@@ -19,14 +19,19 @@ class CompareTSV():
         self.df1 = df1
         self.df2 = df2
         self.contains_ID = False
+        self.replaced_ID = False
+        self.ID_replacement_cols = ['Gene', 'AA Change']
         self.differences = {}
         self.column_mappings = { # Fill in different names/formatting between versions
             'Best Peptide': ['best peptide', 'best_peptide'],
             'Best Transcript': ['best transcript', 'best_transcript'],
-            'Tier': ['tier']
+            'Tier': ['tier'],
+            'AA Change': ['AA_change'],
+            'Num Passing Transcripts': ['Num_Transcript'],
+            'Num Passing Peptides': ['Num_Peptides'],
         }
         self.columns_to_compare = self.check_columns(columns_to_compare)
-        self.common_ids = self.get_common_ids() if self.contains_ID else set()
+        self.common_rows = self.get_common_rows()
 
     
     def compare_rows_with_ID(self, row_file1, row_file2):
@@ -47,16 +52,16 @@ class CompareTSV():
         unique_to_file1 = []
         unique_to_file2 = []
         for value in self.df1['ID'].values:
-            if value not in self.common_ids and not pd.isna(value):
+            if value not in self.common_rows and not pd.isna(value):
                 unique_to_file1.append(value)
         
         for value in self.df2['ID'].values:
-            if value not in self.common_ids and not pd.isna(value):
+            if value not in self.common_rows and not pd.isna(value):
                 unique_to_file2.append(value)
         return unique_to_file1, unique_to_file2
 
 
-    def comparison_with_ID(self):
+    def get_file_differences(self):
         unique_to_file1, unique_to_file2 = self.get_unique_ids()
         for value1 in self.df1['ID'].values:
             if value1 not in unique_to_file1:
@@ -79,18 +84,11 @@ class CompareTSV():
                 self.differences['ID'].append({
                         'File 1': '',
                         'File 2': variant
-                    }) 
-
-
-    def comparison_without_ID(self):
-        pass
+                    })
 
 
     def generate_comparison_report(self):
-        if (self.contains_ID):
-            self.comparison_with_ID()
-        else:
-            self.comparison_without_ID()
+        self.get_file_differences()
         
         if self.differences:
             first_unique_variant1 = True
@@ -100,6 +98,8 @@ class CompareTSV():
                     f.write(f"Report Generation Date and Time: {datetime.datetime.now()}\n\n")
                     f.write(f"File 1: {self.input_file1}\n")
                     f.write(f"File 2: {self.input_file2}\n")
+                    if self.replaced_ID:
+                        f.write("\n\nID Format: \'Gene-AA_Change\'")
                     for col, diffs in self.differences.items():
                         if col == "ID":
                             f.write(f"\n\n============[ UNIQUE VARIANTS ]============\n\n\n")
@@ -120,7 +120,7 @@ class CompareTSV():
                             f.write(f"\n\n============[ DIFFERENCES IN {col.upper()} ]============\n\n\n")
                             f.write("ID\tFile 1\tFile 2\n")
                             for diff in diffs:
-                                f.write(f"{diff['ID']}\t{diff['File 1']}\t{diff['File 2']}\n")
+                                f.write(f"{diff['ID']}:\t{diff['File 1']}\t->\t{diff['File 2']}\n")
                 print(f"Successfully generated comparison report.")
             except Exception as e:
                 print(f"Error writing differences to file: {e}")
@@ -128,9 +128,9 @@ class CompareTSV():
             print("The files are identical.")
 
 
-    def get_common_ids(self):
-        common_ids = set(self.df1['ID']).intersection(set(self.df2['ID']))
-        return common_ids
+    def get_common_rows(self):
+        common_rows = set(self.df1['ID']).intersection(set(self.df2['ID']))
+        return common_rows
 
 
     def check_column_formatting(self):
@@ -165,9 +165,24 @@ class CompareTSV():
             else:
                 print("COLUMN DROPPED: \'" + col + "\' is not present in either file")
         if not self.contains_ID:
-            # TODO: Add AA change and gene to columns to keep if ID not present?
-            print("ID NOT FOUND")
+            can_replace = True
+            for col in self.ID_replacement_cols:
+                if col not in self.df1.columns or col not in self.df2.columns:
+                    can_replace = False
+            if can_replace:
+                print("Replacing ID with Gene and AA Change")
+                self.combine_gene_and_AA_change()
+                columns_to_keep.append('ID')
+                self.replaced_ID = True
         return columns_to_keep
+
+
+    def combine_gene_and_AA_change(self):
+        self.df1['ID'] = self.df1[self.ID_replacement_cols[0]].astype(str) + '-' + self.df1[self.ID_replacement_cols[1]].astype(str)
+        self.df2['ID'] = self.df2[self.ID_replacement_cols[0]].astype(str) + '-' + self.df2[self.ID_replacement_cols[1]].astype(str)
+
+        self.df1.drop(columns=self.ID_replacement_cols, inplace=True)
+        self.df2.drop(columns=self.ID_replacement_cols, inplace=True)
 
 
     def drop_additional_columns(self):
@@ -180,8 +195,7 @@ class CompareTSV():
         if cols2_to_drop:
             self.df2.drop(columns=cols2_to_drop, inplace=True)
 
-        if self.contains_ID:
-            self.columns_to_compare.remove('ID')
+        self.columns_to_compare.remove('ID')
 
 
     def make_rows_equal(self):
@@ -208,7 +222,6 @@ class CompareTSV():
 
     
     def sort_rows(self):
-        # ID is a unique identifier present in all of the recent versions >3.0
         if self.contains_ID:
             # Extract parts and create columns for sorting
             self.df1[['chr_num', 'num1', 'num2']] = self.df1['ID'].apply(self.extract_parts_ID)
@@ -225,7 +238,16 @@ class CompareTSV():
             # Remove the temporary columns
             self.df1.drop(columns=['chr_num', 'num1', 'num2'], inplace=True)
             self.df2.drop(columns=['chr_num', 'num1', 'num2'], inplace=True)
-        else:
-            # TODO: Implement sorting by another method when ID is not present
-            # "Gene" and "AA change"?
-            pass
+
+        elif self.replaced_ID:
+            temp_cols = self.df1['ID'].str.split('-', expand=True)
+            self.df1['grp1'] = temp_cols[0]
+            self.df1['grp2'] = temp_cols[1]
+            self.df1.sort_values(by=['grp1', 'grp2'], inplace=True)
+            self.df1.drop(columns=['grp1', 'grp2'], inplace=True)
+
+            temp_cols = self.df2['ID'].str.split('-', expand=True)
+            self.df2['grp1'] = temp_cols[0]
+            self.df2['grp2'] = temp_cols[1]
+            self.df2.sort_values(by=['grp1', 'grp2'], inplace=True)
+            self.df2.drop(columns=['grp1', 'grp2'], inplace=True)

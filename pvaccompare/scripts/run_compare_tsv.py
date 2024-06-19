@@ -15,7 +15,7 @@ def main(args):
 
     # Number of variants, best peptide selected, best transcript select, and tier most important
     # TODO: Add this as a parameter to the command?
-    columns_to_compare = ['ID', 'Best Peptide', 'Tier']
+    columns_to_compare = ['ID', 'Best Transcript', 'Best Peptide', 'Tier', 'Num Passing Transcripts', 'Num Passing Peptides']
 
     comparer = CompareTSV(file1_path, file2_path, output_path, columns_to_compare)
     comparer.drop_additional_columns()
