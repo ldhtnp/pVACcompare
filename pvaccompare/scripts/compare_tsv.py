@@ -15,7 +15,7 @@ class CompareTSV():
             df1 = pd.read_csv(input_file1, sep='\t')
             df2 = pd.read_csv(input_file2, sep='\t')
         except Exception as e:
-            print(f"Error loading files: {e}")
+            raise Exception(f"Error loading files: {e}")
         self.df1 = df1
         self.df2 = df2
         self.contains_ID = False
@@ -31,7 +31,7 @@ class CompareTSV():
             'Num Passing Peptides': ['Num_Peptides'],
         }
         self.columns_to_compare = self.check_columns(columns_to_compare)
-        self.common_rows = self.get_common_rows()
+        self.common_rows = self.get_common_rows() if self.contains_ID or self.replaced_ID else set()
 
     
     def compare_rows_with_ID(self, row_file1, row_file2):
@@ -123,7 +123,7 @@ class CompareTSV():
                                 f.write(f"{diff['ID']}:\t{diff['File 1']}\t->\t{diff['File 2']}\n")
                 print(f"Successfully generated comparison report.")
             except Exception as e:
-                print(f"Error writing differences to file: {e}")
+                raise Exception(f"Error writing differences to file: {e}")
         else:
             print("The files are identical.")
 
