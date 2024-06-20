@@ -110,6 +110,7 @@ class CompareTSV():
         num_unique_vars_file1 = len(self.unique_variants_file1)
         num_unique_vars_file2 = len(self.unique_variants_file2)
         summary = f"\n\n/* Differences Summary */\n"
+        summary += f"-----------------------------\n"
         summary += f"Total number of variants: {total_vars}\n"
         summary += f"Number of common variants: {common_vars}\n"
         summary += f"Number of variants unique to file 1: {num_unique_vars_file1}\n"
