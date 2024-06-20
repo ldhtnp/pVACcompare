@@ -32,6 +32,7 @@ class CompareTSV():
         }
         self.columns_to_compare = self.check_columns(columns_to_compare)
         self.common_rows = self.get_common_rows() if self.contains_ID or self.replaced_ID else set()
+        self.unique_variants_file1, self.unique_variants_file2 = self.get_unique_variants() if self.contains_ID or self.replaced_ID else set()
 
     
     def compare_rows_with_ID(self, row_file1, row_file2):
@@ -48,43 +49,77 @@ class CompareTSV():
                 })
 
 
-    def get_unique_ids(self):
-        unique_to_file1 = []
-        unique_to_file2 = []
+    def get_unique_variants(self):
+        unique_variants_file1 = set()
+        unique_variants_file2 = set()
         for value in self.df1['ID'].values:
             if value not in self.common_rows and not pd.isna(value):
-                unique_to_file1.append(value)
+                unique_variants_file1.add(value)
         
         for value in self.df2['ID'].values:
             if value not in self.common_rows and not pd.isna(value):
-                unique_to_file2.append(value)
-        return unique_to_file1, unique_to_file2
+                unique_variants_file2.add(value)
+        return unique_variants_file1, unique_variants_file2
 
 
     def get_file_differences(self):
-        unique_to_file1, unique_to_file2 = self.get_unique_ids()
         for value1 in self.df1['ID'].values:
-            if value1 not in unique_to_file1:
+            if value1 not in self.unique_variants_file1:
                 for value2 in self.df2['ID'].values:
-                    if value2 not in unique_to_file2:
+                    if value2 not in self.unique_variants_file2:
                         if (value1 == value2):
                             row_file1 = self.df1.loc[self.df1['ID'] == value1]
                             row_file2 = self.df2.loc[self.df2['ID'] == value2]
                             self.compare_rows_with_ID(row_file1, row_file2)
 
-        if unique_to_file1 or unique_to_file2:
+        if self.unique_variants_file1 or self.unique_variants_file2:
             if 'ID' not in self.differences:
                 self.differences['ID'] = []
-            for variant in unique_to_file1:
+            for variant in self.unique_variants_file1:
                 self.differences['ID'].append({
                         'File 1': variant,
                         'File 2': ''
                     })
-            for variant in unique_to_file2:
+            for variant in self.unique_variants_file2:
                 self.differences['ID'].append({
                         'File 1': '',
                         'File 2': variant
                     })
+
+
+    def get_total_number_variants(self):
+        total_num_vars = len(self.common_rows)
+        for value in self.unique_variants_file1:
+            total_num_vars += 1
+        for value in self.unique_variants_file2:
+            total_num_vars += 1
+        return total_num_vars
+
+
+    def get_number_column_differences(self):
+        num_col_differences = {}
+        for col, differences in self.differences.items():
+            if (col != "ID"):
+                num_col_differences[col] = len(differences)
+        return num_col_differences
+
+
+    def generate_differences_summary(self):
+        total_vars = self.get_total_number_variants()
+        common_vars = len(self.common_rows)
+        num_unique_vars_file1 = len(self.unique_variants_file1)
+        num_unique_vars_file2 = len(self.unique_variants_file2)
+        summary = f"\n\n/* Differences Summary */\n"
+        summary += f"Total number of variants: {total_vars}\n"
+        summary += f"Number of common variants: {common_vars}\n"
+        summary += f"Number of variants unique to file 1: {num_unique_vars_file1}\n"
+        summary += f"Number of variants unique to file 2: {num_unique_vars_file2}\n"
+        num_col_differences = self.get_number_column_differences()
+        for col, _ in self.differences.items():
+            if col != "ID":
+                summary += f"-----\n"
+                summary += f"Number of differences in {col}: {num_col_differences[col]}\n"
+        return summary
 
 
     def generate_comparison_report(self):
@@ -98,6 +133,8 @@ class CompareTSV():
                     f.write(f"Report Generation Date and Time: {datetime.datetime.now()}\n\n")
                     f.write(f"File 1: {self.input_file1}\n")
                     f.write(f"File 2: {self.input_file2}\n")
+                    differences_summary = self.generate_differences_summary()
+                    f.write(differences_summary)
                     if self.replaced_ID:
                         f.write("\n\nID Format: \'Gene-AA_Change\'")
                     for col, diffs in self.differences.items():
