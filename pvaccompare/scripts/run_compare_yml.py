@@ -1,5 +1,6 @@
 import yaml
 from deepdiff import DeepDiff
+import re
 import argparse
 
 
@@ -10,6 +11,12 @@ class CompareYML():
         self.data1, self.data2 = self.load_files()
         self.output_path = output_path
         self.differences = DeepDiff(self.data1, self.data2, ignore_order=True, exclude_paths=excluded_paths)
+        self.output_mappings = {
+            'dictionary_item_added': 'Fields Unique to File 2',
+            'dictionary_item_removed': 'Fields Unique to File 1',
+            'values_changed': 'Values Changed',
+            'iterable_item_added': 'Values Added in File 2'
+        }
 
 
     def load_files(self):
@@ -21,20 +28,28 @@ class CompareYML():
 
     def interpret_diff(self):
         with open(self.output_path, 'w') as f:
+            f.write(f"File 1: {self.input_file1}\n")
+            f.write(f"File 2: {self.input_file2}\n\n")
             for change_type, changes in self.differences.items():
-                f.write(f"Change type: {change_type}\n")
+                f.write(f"=== {self.output_mappings[change_type]} ===\n")
+                pattern = r"root\['(.*?)'\]"
                 if isinstance(changes, dict):
                     for change, details in changes.items():
+                        formatted_output = re.match(pattern, change)[1]
                         if change_type == "values_changed":
-                            f.write(f"  {change}: {details['old_value']} -> {details['new_value']}\n")
+                            f.write(f"\t{formatted_output}: {details['old_value']} -> {details['new_value']}\n")
                         elif change_type in ["dictionary_item_added", "dictionary_item_removed"]:
-                            f.write(f"  {change}: {details}\n")
+                            f.write(f"\t{formatted_output}: {details}\n")
                         elif change_type == "type_changes":
-                            f.write(f"  {change}: {details['old_type']} -> {details['new_type']}\n")
+                            f.write(f"\t{formatted_output}: {details['old_type']} -> {details['new_type']}\n")
                         elif change_type in ["iterable_item_added", "iterable_item_removed"]:
-                            f.write(f"  {change}: {details}\n")
+                            f.write(f"\t{formatted_output}: {details}\n")
                 else:
-                    f.write(f"  {changes}\n")
+                    changes = str(changes)
+                    matches = re.findall(pattern, changes)
+                    formatted_output = "\n\t".join(matches)
+                    f.write(f"\t{formatted_output}\n")
+                f.write("\n")
 
 
 def main(args):
@@ -55,6 +70,7 @@ def main(args):
         print("The YAML files are identical.")
     else:
         comparer.interpret_diff()
+        print("Successfully generated input comparison report.")
 
 
 if __name__ == "__main__":
