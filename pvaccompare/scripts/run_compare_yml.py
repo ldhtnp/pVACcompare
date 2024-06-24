@@ -13,6 +13,7 @@ def main(args):
     file2_path = parsed_args.input_file2
     output_path = parsed_args.output_file
 
+    # TODO: Add this as an argument to allow the user to choose which fields to ignore?
     excluded_paths = ["root['input_file']", "root['output_dir']", "root['tmp_dir']"]
     comparer = CompareYML(file1_path, file2_path, output_path, excluded_paths)
 
