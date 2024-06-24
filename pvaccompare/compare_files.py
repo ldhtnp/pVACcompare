@@ -8,7 +8,6 @@ def define_parser():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     subparsers = parser.add_subparsers()
 
-    #add subcommands
     compare_tsv_parser = subparsers.add_parser(
         "compare-tsv",
         help="Compare tsv files",
