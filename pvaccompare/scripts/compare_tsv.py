@@ -30,6 +30,7 @@ class CompareTSV():
             'Num Passing Transcripts': ['Num_Transcript'],
             'Num Passing Peptides': ['Num_Peptides'],
         }
+        self.columns_dropped_message = ""
         self.columns_to_compare = self.check_columns(columns_to_compare)
         self.common_rows = self.get_common_rows() if self.contains_ID or self.replaced_ID else set()
         self.unique_variants_file1, self.unique_variants_file2 = self.get_unique_variants() if self.contains_ID or self.replaced_ID else set()
@@ -109,7 +110,7 @@ class CompareTSV():
         common_vars = len(self.common_rows)
         num_unique_vars_file1 = len(self.unique_variants_file1)
         num_unique_vars_file2 = len(self.unique_variants_file2)
-        summary = f"\n\n/* Differences Summary */\n"
+        summary = f"\n/* Differences Summary */\n"
         summary += f"-----------------------------\n"
         summary += f"Total number of variants: {total_vars}\n"
         summary += f"Number of common variants: {common_vars}\n"
@@ -134,10 +135,12 @@ class CompareTSV():
                     f.write(f"Report Generation Date and Time: {datetime.datetime.now()}\n\n")
                     f.write(f"File 1: {self.input_file1}\n")
                     f.write(f"File 2: {self.input_file2}\n")
+                    if self.columns_dropped_message != "":
+                        f.write(f"\n{self.columns_dropped_message}\n")
                     differences_summary = self.generate_differences_summary()
                     f.write(differences_summary)
                     if self.replaced_ID:
-                        f.write("\n\nID Format: \'Gene-AA_Change\'")
+                        f.write("\n\nID Format: 'Gene (AA_Change)'")
                     for col, diffs in self.differences.items():
                         if col == "ID":
                             f.write(f"\n\n============[ UNIQUE VARIANTS ]============\n\n\n")
@@ -196,12 +199,18 @@ class CompareTSV():
                 if (col == 'ID'):
                     self.contains_ID = True
                 columns_to_keep.append(col)
-            elif (col in self.df1.columns):
-                print("COLUMN DROPPED: \'" + col + "\' is only present in file 1")
-            elif (col in self.df2.columns):
-                print("COLUMN DROPPED: \'" + col + "\' is only present in file 2")
             else:
-                print("COLUMN DROPPED: \'" + col + "\' is not present in either file")
+                if (col in self.df1.columns):
+                    self.columns_dropped_message += f"COLUMN DROPPED: '{col}' is only present in file 1\n"
+                    print("COLUMN DROPPED: '" + col + "' is only present in file 1")
+                elif (col in self.df2.columns):
+                    self.columns_dropped_message += f"COLUMN DROPPED: '{col}' is only present in file 2\n"
+                    print("COLUMN DROPPED: '" + col + "' is only present in file 2")
+                else:
+                    self.columns_dropped_message += f"COLUMN DROPPED: '{col}' is not present in either file\n"
+                    print("COLUMN DROPPED: '" + col + "' is not present in either file")
+                if (col == 'ID'):
+                    self.columns_dropped_message += "\tReplaced ID with Gene and AA_Change\n"
         if not self.contains_ID:
             can_replace = True
             for col in self.ID_replacement_cols:
@@ -216,8 +225,8 @@ class CompareTSV():
 
 
     def combine_gene_and_AA_change(self):
-        self.df1['ID'] = self.df1[self.ID_replacement_cols[0]].astype(str) + '-' + self.df1[self.ID_replacement_cols[1]].astype(str)
-        self.df2['ID'] = self.df2[self.ID_replacement_cols[0]].astype(str) + '-' + self.df2[self.ID_replacement_cols[1]].astype(str)
+        self.df1['ID'] = self.df1[self.ID_replacement_cols[0]].astype(str) + ' (' + self.df1[self.ID_replacement_cols[1]].astype(str) + ')'
+        self.df2['ID'] = self.df2[self.ID_replacement_cols[0]].astype(str) + ' (' + self.df2[self.ID_replacement_cols[1]].astype(str) + ')'
 
         self.df1.drop(columns=self.ID_replacement_cols, inplace=True)
         self.df2.drop(columns=self.ID_replacement_cols, inplace=True)
