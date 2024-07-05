@@ -6,7 +6,7 @@ def main(args):
     parser = argparse.ArgumentParser(description="Compare two TSV files and output differences.")
     parser.add_argument("input_file1", help="Path to the first TSV file")
     parser.add_argument("input_file2", help="Path to the second TSV file")
-    parser.add_argument("output_file", help="Path to the output TSV file")
+    parser.add_argument("output_file", help="Path to the output file")
     
     parsed_args = parser.parse_args(args)
     file1_path = parsed_args.input_file1

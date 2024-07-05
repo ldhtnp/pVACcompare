@@ -3,6 +3,7 @@ import sys
 from subprocess import call
 from scripts import run_compare_tsv
 from scripts import run_compare_yml
+from scripts import run_compare_json
 
 def define_parser():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -21,6 +22,13 @@ def define_parser():
         add_help=False
     )
     compare_yml_parser.set_defaults(func=run_compare_yml.main)
+
+    compare_json_parser = subparsers.add_parser(
+        "compare-json",
+        help="Compare json files",
+        add_help=False
+    )
+    compare_json_parser.set_defaults(func=run_compare_json.main)
 
     return parser
 

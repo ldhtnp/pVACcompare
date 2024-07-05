@@ -6,7 +6,7 @@ def main(args):
     parser = argparse.ArgumentParser(description="Compare two YAML files and output differences.")
     parser.add_argument("input_file1", help="Path to the first YAML file")
     parser.add_argument("input_file2", help="Path to the second YAML file")
-    parser.add_argument("output_file", help="Path to the output TSV file")
+    parser.add_argument("output_file", help="Path to the output file")
     
     parsed_args = parser.parse_args(args)
     file1_path = parsed_args.input_file1
@@ -20,8 +20,11 @@ def main(args):
     if not comparer.differences:
         print("The YAML files are identical.")
     else:
-        comparer.interpret_diff()
-        print("Successfully generated input comparison report.")
+        try:
+            comparer.interpret_diff()
+            print("Successfully generated input comparison report.")
+        except Exception as e:
+            print(f"Error occurred while generating input comparison report: {e}")
 
 
 if __name__ == "__main__":
