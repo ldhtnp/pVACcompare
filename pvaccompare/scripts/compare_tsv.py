@@ -5,19 +5,13 @@ import datetime
 
 
 class CompareTSV():
-    def __init__(self, input_file1, input_file2, output_path, columns_to_compare):
+    def __init__(self, run_utils, input_file1, input_file2, output_path, columns_to_compare):
+        self.run_utils = run_utils
         self.input_file1 = input_file1
         self.input_file2 = input_file2
         self.output_path = output_path
-        df1 = pd.DataFrame()
-        df2 = pd.DataFrame()
-        try:
-            df1 = pd.read_csv(input_file1, sep='\t')
-            df2 = pd.read_csv(input_file2, sep='\t')
-        except Exception as e:
-            raise Exception(f"Error loading files: {e}")
-        self.df1 = df1
-        self.df2 = df2
+        self.df1, self.df2 = self.load_tsv_files()
+        self.run_utils.fill_common_rows(self.df1, self.df2)
         self.contains_ID = False
         self.replaced_ID = False
         self.ID_replacement_cols = ['Gene', 'AA Change']
@@ -32,10 +26,18 @@ class CompareTSV():
         }
         self.columns_dropped_message = ""
         self.columns_to_compare = self.check_columns(columns_to_compare)
-        self.common_rows = self.get_common_rows() if self.contains_ID or self.replaced_ID else set()
         self.unique_variants_file1, self.unique_variants_file2 = self.get_unique_variants() if self.contains_ID or self.replaced_ID else set()
 
-    
+
+    def load_tsv_files(self):
+        try:
+            df1 = pd.read_csv(self.input_file1, sep='\t')
+            df2 = pd.read_csv(self.input_file2, sep='\t')
+        except Exception as e:
+            raise Exception(f"Error loading files: {e}")
+        return df1, df2
+
+
     def compare_rows_with_ID(self, row_file1, row_file2):
         for col in self.columns_to_compare:
             value_file1 = row_file1[col].values[0]
@@ -167,11 +169,6 @@ class CompareTSV():
                 raise Exception(f"Error writing differences to file: {e}")
         else:
             print("The files are identical.")
-
-
-    def get_common_rows(self):
-        common_rows = set(self.df1['ID']).intersection(set(self.df2['ID']))
-        return common_rows
 
 
     def check_column_formatting(self):
