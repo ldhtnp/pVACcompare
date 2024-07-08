@@ -5,11 +5,12 @@ import re
 
 
 class CompareJSON():
-    def __init__(self, input_file1, input_file2, output_path):
+    def __init__(self, run_utils, input_file1, input_file2):
+        self.run_utils = run_utils
         self.input_file1 = input_file1
         self.input_file2 = input_file2
         self.json1, self.json2 = self.load_files()
-        self.output_path = output_path
+        self.output_path = run_utils.output_path
         self.differences = self.run_diff()
         self.output_mappings = {
             'dictionary_item_added': 'Fields Unique to File 2',
@@ -65,18 +66,8 @@ class CompareJSON():
                 f.write("\n")
 
 
-def main(args):
-    parser = argparse.ArgumentParser(description="Compare two json files and output differences.")
-    parser.add_argument("input_file1", help="Path to the first json file")
-    parser.add_argument("input_file2", help="Path to the second json file")
-    parser.add_argument("output_file", help="Path to the output file")
-    
-    parsed_args = parser.parse_args(args)
-    file1_path = parsed_args.input_file1
-    file2_path = parsed_args.input_file2
-    output_path = parsed_args.output_file
-
-    comparer = CompareJSON(file1_path, file2_path, output_path)
+def main(run_utils, input_file1, input_file2):
+    comparer = CompareJSON(run_utils, input_file1, input_file2)
     if (comparer.differences):
         comparer.generate_report()
         print("Successfully generated JSON comparison report.")

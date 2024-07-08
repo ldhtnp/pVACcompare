@@ -5,13 +5,13 @@ import datetime
 
 
 class CompareTSV():
-    def __init__(self, run_utils, input_file1, input_file2, output_path, columns_to_compare):
+    def __init__(self, run_utils, input_file1, input_file2, columns_to_compare):
         self.run_utils = run_utils
         self.input_file1 = input_file1
         self.input_file2 = input_file2
-        self.output_path = output_path
+        self.output_path = run_utils.output_path
         self.df1, self.df2 = self.load_tsv_files()
-        self.run_utils.fill_common_rows(self.df1, self.df2)
+        run_utils.fill_common_rows(self.df1, self.df2)
         self.contains_ID = False
         self.replaced_ID = False
         self.ID_replacement_cols = ['Gene', 'AA Change']
@@ -56,11 +56,11 @@ class CompareTSV():
         unique_variants_file1 = set()
         unique_variants_file2 = set()
         for value in self.df1['ID'].values:
-            if value not in self.common_rows and not pd.isna(value):
+            if value not in self.run_utils.common_rows and not pd.isna(value):
                 unique_variants_file1.add(value)
         
         for value in self.df2['ID'].values:
-            if value not in self.common_rows and not pd.isna(value):
+            if value not in self.run_utils.common_rows and not pd.isna(value):
                 unique_variants_file2.add(value)
         return unique_variants_file1, unique_variants_file2
 
@@ -91,7 +91,7 @@ class CompareTSV():
 
 
     def get_total_number_variants(self):
-        total_num_vars = len(self.common_rows)
+        total_num_vars = len(self.run_utils.common_rows)
         for value in self.unique_variants_file1:
             total_num_vars += 1
         for value in self.unique_variants_file2:
@@ -109,7 +109,7 @@ class CompareTSV():
 
     def generate_differences_summary(self):
         total_vars = self.get_total_number_variants()
-        common_vars = len(self.common_rows)
+        common_vars = len(self.run_utils.common_rows)
         num_unique_vars_file1 = len(self.unique_variants_file1)
         num_unique_vars_file2 = len(self.unique_variants_file2)
         summary = f"\n/* Differences Summary */\n"

@@ -4,12 +4,12 @@ import re
 
 
 class CompareYML():
-    def __init__(self, input_file1, input_file2, output_path, excluded_paths):
+    def __init__(self, run_utils, input_file1, input_file2):
+        self.run_utils = run_utils
         self.input_file1 = input_file1
         self.input_file2 = input_file2
         self.data1, self.data2 = self.load_files()
-        self.output_path = output_path
-        self.differences = DeepDiff(self.data1, self.data2, ignore_order=True, exclude_paths=excluded_paths)
+        self.differences = DeepDiff(self.data1, self.data2, ignore_order=True)
         self.output_mappings = {
             'dictionary_item_added': 'Fields Unique to File 2',
             'dictionary_item_removed': 'Fields Unique to File 1',
@@ -26,7 +26,7 @@ class CompareYML():
 
 
     def interpret_diff(self):
-        with open(self.output_path, 'w') as f:
+        with open(self.run_utils.output_path, 'w') as f:
             f.write(f"File 1: {self.input_file1}\n")
             f.write(f"File 2: {self.input_file2}\n\n")
             for change_type, changes in self.differences.items():
