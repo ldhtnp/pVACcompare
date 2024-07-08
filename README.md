@@ -4,4 +4,5 @@ In its current state the following files are included in the comparison:
 - all_epitopes.aggregated.tsv
 - all_epitopes.aggregated.metrics.json
 - log/inputs.yml
+---
 Comparison can be specified for MHC Class I results, MHC Class II results, or both.
