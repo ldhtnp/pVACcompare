@@ -163,7 +163,6 @@ class CompareTSV():
                             f.write("ID\tFile 1\tFile 2\n")
                             for diff in diffs:
                                 f.write(f"{diff['ID']}:\t{diff['File 1']}\t->\t{diff['File 2']}\n")
-                print(f"Successfully generated comparison report.")
             except Exception as e:
                 raise Exception(f"Error writing differences to file: {e}")
         else:
@@ -198,13 +197,10 @@ class CompareTSV():
             else:
                 if (col in self.df1.columns):
                     self.columns_dropped_message += f"COLUMN DROPPED: '{col}' is only present in file 1\n"
-                    print("COLUMN DROPPED: '" + col + "' is only present in file 1")
                 elif (col in self.df2.columns):
                     self.columns_dropped_message += f"COLUMN DROPPED: '{col}' is only present in file 2\n"
-                    print("COLUMN DROPPED: '" + col + "' is only present in file 2")
                 else:
                     self.columns_dropped_message += f"COLUMN DROPPED: '{col}' is not present in either file\n"
-                    print("COLUMN DROPPED: '" + col + "' is not present in either file")
                 if (col == 'ID'):
                     self.columns_dropped_message += "\tReplaced ID with Gene and AA_Change\n"
         if not self.contains_ID:

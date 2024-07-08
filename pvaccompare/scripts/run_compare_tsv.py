@@ -1,11 +1,7 @@
 from scripts.compare_tsv import CompareTSV
 
 
-def main(run_utils, input_file1, input_file2):
-    # Number of variants, best peptide selected, best transcript select, and tier most important
-    # TODO: Add this as a parameter to the command?
-    columns_to_compare = ['ID', 'Best Transcript', 'Best Peptide', 'Tier', 'Num Passing Transcripts', 'Num Passing Peptides']
-
+def main(run_utils, input_file1, input_file2, columns_to_compare):
     comparer = CompareTSV(run_utils, input_file1, input_file2, columns_to_compare)
     if comparer.contains_ID or comparer.replaced_ID:
         comparer.drop_additional_columns()

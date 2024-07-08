@@ -9,7 +9,6 @@ def main(run_utils, input_file1, input_file2):
     else:
         try:
             comparer.interpret_diff()
-            print("Successfully generated input comparison report.")
         except Exception as e:
             print(f"Error occurred while generating input comparison report: {e}")
 

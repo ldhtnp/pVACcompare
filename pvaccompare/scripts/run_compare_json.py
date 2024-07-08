@@ -70,7 +70,6 @@ def main(run_utils, input_file1, input_file2):
     comparer = CompareJSON(run_utils, input_file1, input_file2)
     if (comparer.differences):
         comparer.generate_report()
-        print("Successfully generated JSON comparison report.")
     else:
         print("The JSON files are identical.")
 
