@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import re
-import datetime
 
 
 class CompareTSV():
@@ -133,12 +132,12 @@ class CompareTSV():
             first_unique_variant1 = True
             first_unique_variant2 = True
             try:
-                with open(self.output_path, 'w') as f:
-                    f.write(f"Report Generation Date and Time: {datetime.datetime.now()}\n\n")
+                with open(self.output_path, 'a') as f:
+                    f.write("\n============================== AGGREGATED TSV COMPARISON ==============================\n\n\n")
                     f.write(f"File 1: {self.input_file1}\n")
                     f.write(f"File 2: {self.input_file2}\n")
                     if self.columns_dropped_message != "":
-                        f.write(f"\n{self.columns_dropped_message}\n")
+                        f.write(f"\n{self.columns_dropped_message}")
                     differences_summary = self.generate_differences_summary()
                     f.write(differences_summary)
                     if self.replaced_ID:
