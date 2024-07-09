@@ -28,7 +28,7 @@ class CompareYML():
 
     def interpret_diff(self):
         with open(self.run_utils.output_path, 'w') as f:
-            f.write(f"Report Generation Date and Time: {datetime.datetime.now()}\n\n")
+            f.write(f"Report Generation Date and Time: {datetime.datetime.now()}\n")
             f.write("\n============================== INPUT YML COMPARISON ==============================\n\n\n")
             f.write(f"File 1: {self.input_file1}\n")
             f.write(f"File 2: {self.input_file2}\n\n")
