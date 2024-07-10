@@ -52,7 +52,7 @@ def main():
             if yml1_path and yml2_path:
                 run_compare_yml.main(run_utils, yml1_path, yml2_path)
             else:
-                raise Exception("Could not locate the YML input files for MHC Class I.")
+                print("Could not locate the YML input files for MHC Class I.")
 
             tsv1_path = find_file(args.results_folder1, "MHC_Class_I/", '*all_epitopes.aggregated.tsv')
             tsv2_path = find_file(args.results_folder2, "MHC_Class_I/", '*all_epitopes.aggregated.tsv')
@@ -66,7 +66,7 @@ def main():
             if json1_path and json2_path:
                 run_compare_json.main(run_utils, json1_path, json2_path)
             else:
-                raise Exception("Could not locate the JSON metric files for MHC Class I.")
+                print("Could not locate the JSON metric files for MHC Class I.")
             print("Successfully generated MHC Class I comparison report.")
         elif class_type == '2':
             output_file = args.output_file + "_MHC_Class_II.tsv"
@@ -77,7 +77,7 @@ def main():
             if yml1_path and yml2_path:
                 run_compare_yml.main(run_utils, yml1_path, yml2_path)
             else:
-                raise Exception("Could not locate the YML input files for MHC Class II.")
+                print("Could not locate the YML input files for MHC Class II.")
 
             tsv1_path = find_file(args.results_folder1, "MHC_Class_II/", '*all_epitopes.aggregated.tsv')
             tsv2_path = find_file(args.results_folder2, "MHC_Class_II/", '*all_epitopes.aggregated.tsv')
@@ -91,7 +91,7 @@ def main():
             if json1_path and json2_path:
                 run_compare_json.main(run_utils, json1_path, json2_path)
             else:
-                raise Exception("Could not locate the JSON metric files for MHC Class II.")
+                print("Could not locate the JSON metric files for MHC Class II.")
             print("Successfully generated MHC Class II comparison report.")
 
 
