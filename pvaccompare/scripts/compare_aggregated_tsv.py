@@ -3,14 +3,14 @@ import numpy as np
 import re
 
 
-class CompareTSV():
+class CompareAggregatedTSV():
     def __init__(self, run_utils, input_file1, input_file2, columns_to_compare):
         self.run_utils = run_utils
         self.input_file1 = input_file1
         self.input_file2 = input_file2
         self.output_path = run_utils.output_path
-        self.df1, self.df2 = self.load_tsv_files()
-        run_utils.fill_common_rows(self.df1, self.df2)
+        self.df1, self.df2 = run_utils.load_tsv_files(self.input_file1, self.input_file2)
+        self.common_variants = run_utils.get_common_variants(self.df1, self.df2)
         self.contains_ID = False
         self.replaced_ID = False
         self.ID_replacement_cols = ['Gene', 'AA Change']
@@ -25,75 +25,14 @@ class CompareTSV():
         }
         self.columns_dropped_message = ""
         self.columns_to_compare = self.check_columns(columns_to_compare)
-        self.unique_variants_file1, self.unique_variants_file2 = self.get_unique_variants() if self.contains_ID or self.replaced_ID else set()
-
-
-    def load_tsv_files(self):
-        try:
-            df1 = pd.read_csv(self.input_file1, sep='\t')
-            df2 = pd.read_csv(self.input_file2, sep='\t')
-        except Exception as e:
-            raise Exception(f"Error loading files: {e}")
-        return df1, df2
-
-
-    def compare_rows_with_ID(self, row_file1, row_file2):
-        for col in self.columns_to_compare:
-            value_file1 = row_file1[col].values[0]
-            value_file2 = row_file2[col].values[0]
-            if value_file1 != value_file2:
-                if col not in self.differences:
-                    self.differences[col] = []
-                self.differences[col].append({
-                    'ID': row_file1['ID'].values[0],
-                    'File 1': value_file1,
-                    'File 2': value_file2
-                })
-
-
-    def get_unique_variants(self):
-        unique_variants_file1 = set()
-        unique_variants_file2 = set()
-        for value in self.df1['ID'].values:
-            if value not in self.run_utils.common_rows and not pd.isna(value):
-                unique_variants_file1.add(value)
-        
-        for value in self.df2['ID'].values:
-            if value not in self.run_utils.common_rows and not pd.isna(value):
-                unique_variants_file2.add(value)
-        return unique_variants_file1, unique_variants_file2
-
-
-    def get_file_differences(self):
-        for value1 in self.df1['ID'].values:
-            if value1 not in self.unique_variants_file1:
-                for value2 in self.df2['ID'].values:
-                    if value2 not in self.unique_variants_file2:
-                        if (value1 == value2):
-                            row_file1 = self.df1.loc[self.df1['ID'] == value1]
-                            row_file2 = self.df2.loc[self.df2['ID'] == value2]
-                            self.compare_rows_with_ID(row_file1, row_file2)
-
-        if self.unique_variants_file1 or self.unique_variants_file2:
-            if 'ID' not in self.differences:
-                self.differences['ID'] = []
-            for variant in self.unique_variants_file1:
-                self.differences['ID'].append({
-                        'File 1': variant,
-                        'File 2': ''
-                    })
-            for variant in self.unique_variants_file2:
-                self.differences['ID'].append({
-                        'File 1': '',
-                        'File 2': variant
-                    })
+        self.unique_variants_file1, self.unique_variants_file2 = run_utils.get_unique_variants(self.df1, self.df2, self.common_variants) if self.contains_ID or self.replaced_ID else set()
 
 
     def get_total_number_variants(self):
-        total_num_vars = len(self.run_utils.common_rows)
-        for value in self.unique_variants_file1:
+        total_num_vars = len(self.common_variants)
+        for _ in self.unique_variants_file1:
             total_num_vars += 1
-        for value in self.unique_variants_file2:
+        for _ in self.unique_variants_file2:
             total_num_vars += 1
         return total_num_vars
 
@@ -108,7 +47,7 @@ class CompareTSV():
 
     def generate_differences_summary(self):
         total_vars = self.get_total_number_variants()
-        common_vars = len(self.run_utils.common_rows)
+        common_vars = len(self.common_variants)
         num_unique_vars_file1 = len(self.unique_variants_file1)
         num_unique_vars_file2 = len(self.unique_variants_file2)
         summary = f"\n/* Differences Summary */\n"
@@ -126,7 +65,7 @@ class CompareTSV():
 
 
     def generate_comparison_report(self):
-        self.get_file_differences()
+        self.differences = self.run_utils.get_file_differences(self.df1, self.df2, self.unique_variants_file1, self.unique_variants_file2, self.columns_to_compare)
         
         if self.differences:
             first_unique_variant1 = True
@@ -235,16 +174,6 @@ class CompareTSV():
             self.df2.drop(columns=cols2_to_drop, inplace=True)
 
         self.columns_to_compare.remove('ID')
-
-
-    def make_rows_equal(self):
-        num_rows_to_add = abs(self.df1.shape[0] - self.df2.shape[0])
-        if self.df1.shape[0] > self.df2.shape[0]:
-            dummy_data = pd.DataFrame(np.nan, index=range(num_rows_to_add), columns=self.df2.columns)
-            self.df2 = pd.concat([self.df2, dummy_data], ignore_index=True)
-        else:
-            dummy_data = pd.DataFrame(np.nan, index=range(num_rows_to_add), columns=self.df1.columns)
-            self.df1 = pd.concat([self.df1, dummy_data], ignore_index=True)
 
 
     @staticmethod

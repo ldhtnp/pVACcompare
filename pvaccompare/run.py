@@ -2,7 +2,8 @@ import argparse
 import glob
 import os
 from scripts.run_utils import RunUtils
-from scripts import run_compare_tsv
+from scripts import run_compare_aggregated_tsv
+from scripts import run_compare_unaggregated_tsv
 from scripts import run_compare_yml
 from scripts import run_compare_json
 
@@ -54,19 +55,26 @@ def main():
             else:
                 print("Could not locate the YML input files for MHC Class I.")
 
-            tsv1_path = find_file(args.results_folder1, "MHC_Class_I/", '*all_epitopes.aggregated.tsv')
-            tsv2_path = find_file(args.results_folder2, "MHC_Class_I/", '*all_epitopes.aggregated.tsv')
-            if tsv1_path and tsv2_path:
-                run_compare_tsv.main(run_utils, tsv1_path, tsv2_path, args.columns_to_compare)
+            agg_tsv1_path = find_file(args.results_folder1, "MHC_Class_I/", '*all_epitopes.aggregated.tsv')
+            agg_tsv2_path = find_file(args.results_folder2, "MHC_Class_I/", '*all_epitopes.aggregated.tsv')
+            if agg_tsv1_path and agg_tsv2_path:
+                run_compare_aggregated_tsv.main(run_utils, agg_tsv1_path, agg_tsv2_path, args.columns_to_compare)
             else:
                 raise Exception("Could not locate the aggregated TSV files for MHC Class I.")
 
-            json1_path = find_file(args.results_folder1, "MHC_Class_I/", '*all_epitopes.aggregated.metrics.json')
-            json2_path = find_file(args.results_folder2, "MHC_Class_I/", '*all_epitopes.aggregated.metrics.json')
-            if json1_path and json2_path:
-                run_compare_json.main(run_utils, json1_path, json2_path)
+            # json1_path = find_file(args.results_folder1, "MHC_Class_I/", '*all_epitopes.aggregated.metrics.json')
+            # json2_path = find_file(args.results_folder2, "MHC_Class_I/", '*all_epitopes.aggregated.metrics.json')
+            # if json1_path and json2_path:
+            #     run_compare_json.main(run_utils, json1_path, json2_path)
+            # else:
+            #     print("Could not locate the JSON metric files for MHC Class I.")
+            
+            unagg_tsv1_path = find_file(args.results_folder1, "MHC_Class_I/", '*all_epitopes.tsv')
+            unagg_tsv2_path = find_file(args.results_folder2, "MHC_Class_I/", '*all_epitopes.tsv')
+            if unagg_tsv1_path and unagg_tsv2_path:
+                run_compare_unaggregated_tsv.main(run_utils, unagg_tsv1_path, unagg_tsv2_path)
             else:
-                print("Could not locate the JSON metric files for MHC Class I.")
+                raise Exception("Could not locate the unaggregated TSV files for MHC Class I.")
             print("Successfully generated MHC Class I comparison report.")
         elif class_type == '2':
             output_file = args.output_file + "_MHC_Class_II.tsv"
@@ -82,16 +90,23 @@ def main():
             tsv1_path = find_file(args.results_folder1, "MHC_Class_II/", '*all_epitopes.aggregated.tsv')
             tsv2_path = find_file(args.results_folder2, "MHC_Class_II/", '*all_epitopes.aggregated.tsv')
             if tsv1_path and tsv2_path:
-                run_compare_tsv.main(run_utils, tsv1_path, tsv2_path, args.columns_to_compare)
+                run_compare_aggregated_tsv.main(run_utils, tsv1_path, tsv2_path, args.columns_to_compare)
             else:
                 raise Exception("Could not locate the aggregated TSV files for MHC Class II.")
 
-            json1_path = find_file(args.results_folder1, "MHC_Class_II/", '*all_epitopes.aggregated.metrics.json')
-            json2_path = find_file(args.results_folder2, "MHC_Class_II/", '*all_epitopes.aggregated.metrics.json')
-            if json1_path and json2_path:
-                run_compare_json.main(run_utils, json1_path, json2_path)
+            # json1_path = find_file(args.results_folder1, "MHC_Class_II/", '*all_epitopes.aggregated.metrics.json')
+            # json2_path = find_file(args.results_folder2, "MHC_Class_II/", '*all_epitopes.aggregated.metrics.json')
+            # if json1_path and json2_path:
+            #     run_compare_json.main(run_utils, json1_path, json2_path)
+            # else:
+            #     print("Could not locate the JSON metric files for MHC Class II.")
+            
+            unagg_tsv1_path = find_file(args.results_folder1, "MHC_Class_II/", '*all_epitopes.tsv')
+            unagg_tsv2_path = find_file(args.results_folder2, "MHC_Class_II/", '*all_epitopes.tsv')
+            if unagg_tsv1_path and unagg_tsv2_path:
+                run_compare_unaggregated_tsv.main(run_utils, unagg_tsv1_path, unagg_tsv2_path)
             else:
-                print("Could not locate the JSON metric files for MHC Class II.")
+                raise Exception("Could not locate the unaggregated TSV files for MHC Class II.")
             print("Successfully generated MHC Class II comparison report.")
 
 
