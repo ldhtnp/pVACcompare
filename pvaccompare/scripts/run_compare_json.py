@@ -1,21 +1,12 @@
 from scripts.compare_json import CompareJSON
 
 
-def main(run_utils, input_file1, input_file2):
-    comparer = CompareJSON(run_utils, input_file1, input_file2)
+def main(input_file1, input_file2, output_file):
+    comparer = CompareJSON(input_file1, input_file2, output_file)
     comparer.compare_metric_data()
 
-    if (comparer.input_differences or comparer.variant_differences):
-        comparer.write_header()
-        if (comparer.input_differences):
-            comparer.generate_input_comparison_report()
-        else:
-            print("The JSON inputs are identical.")
-        
-        if (comparer.variant_differences):
-            comparer.generate_variant_comparison_report()
-        else:
-            print("The JSON variant data is identical.")
+    if any(key != 'Shared Fields' and comparer.input_differences[key] for key in comparer.input_differences):
+        comparer.generate_input_comparison_report()
     else:
         print("The JSON metrics files are identical.")
 

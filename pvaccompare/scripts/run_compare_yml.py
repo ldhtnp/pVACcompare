@@ -1,11 +1,11 @@
 from scripts.compare_yml import CompareYML
 
 
-def main(run_utils, input_file1, input_file2):
-    comparer = CompareYML(run_utils, input_file1, input_file2)
+def main(input_file1, input_file2, output_file):
+    comparer = CompareYML(input_file1, input_file2, output_file)
 
     if not comparer.differences:
-        print("The YAML files are identical.")
+        print("The YAML input files are identical.")
     else:
         try:
             comparer.interpret_diff()

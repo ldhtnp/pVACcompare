@@ -1,20 +1,17 @@
 import pandas as pd
-import numpy as np
 import re
+from scripts.run_utils import *
 
 
 class CompareAggregatedTSV():
-    def __init__(self, run_utils, input_file1, input_file2, columns_to_compare):
-        self.run_utils = run_utils
+    def __init__(self, input_file1, input_file2, output_file, columns_to_compare):
         self.input_file1 = input_file1
         self.input_file2 = input_file2
-        self.output_path = run_utils.output_path
-        self.df1, self.df2 = run_utils.load_tsv_files(self.input_file1, self.input_file2)
-        self.common_variants = run_utils.get_common_variants(self.df1, self.df2)
-        self.contains_ID = False
+        self.output_path = output_file
+        self.df1, self.df2 = load_tsv_files(self.input_file1, self.input_file2)
+        self.contains_ID = True
         self.replaced_ID = False
         self.ID_replacement_cols = ['Gene', 'AA Change']
-        self.differences = {}
         self.column_mappings = { # Fill in different names/formatting between versions
             'Best Peptide': ['best peptide', 'best_peptide'],
             'Best Transcript': ['best transcript', 'best_transcript'],
@@ -24,17 +21,16 @@ class CompareAggregatedTSV():
             'Num Passing Peptides': ['Num_Peptides'],
         }
         self.columns_dropped_message = ""
-        self.columns_to_compare = self.check_columns(columns_to_compare)
-        self.unique_variants_file1, self.unique_variants_file2 = run_utils.get_unique_variants(self.df1, self.df2, self.common_variants) if self.contains_ID or self.replaced_ID else set()
+        self.columns_to_compare = columns_to_compare
+        self.common_variants = set()
+        self.unique_variants_file1 = set()
+        self.unique_variants_file2 = set()
+        self.differences = {}
 
 
     def get_total_number_variants(self):
-        total_num_vars = len(self.common_variants)
-        for _ in self.unique_variants_file1:
-            total_num_vars += 1
-        for _ in self.unique_variants_file2:
-            total_num_vars += 1
-        return total_num_vars
+        total_variants = len(self.common_variants)+len(self.unique_variants_file1)+len(self.unique_variants_file2)
+        return total_variants
 
 
     def get_number_column_differences(self):
@@ -65,7 +61,7 @@ class CompareAggregatedTSV():
 
 
     def generate_comparison_report(self):
-        self.differences = self.run_utils.get_file_differences(self.df1, self.df2, self.unique_variants_file1, self.unique_variants_file2, self.columns_to_compare)
+        self.differences = get_file_differences(self.df1, self.df2, self.unique_variants_file1, self.unique_variants_file2, self.columns_to_compare)
         
         if self.differences:
             first_unique_variant1 = True
@@ -105,7 +101,7 @@ class CompareAggregatedTSV():
             except Exception as e:
                 raise Exception(f"Error writing differences to file: {e}")
         else:
-            print("The files are identical.")
+            print("The Aggregated TSV files are identical.")
 
 
     def check_column_formatting(self):
@@ -125,23 +121,25 @@ class CompareAggregatedTSV():
                     break
 
 
-    def check_columns(self, columns_to_compare):
+    def check_columns(self):
         self.check_column_formatting()
-        columns_to_keep = []
-        for col in columns_to_compare:
-            if (col in self.df1.columns and col in self.df2.columns):
-                if (col == 'ID'):
-                    self.contains_ID = True
-                columns_to_keep.append(col)
+        df1_dropped_cols, df2_dropped_cols = drop_useless_columns(self.df1, self.df2, self.columns_to_compare)
+        columns_to_keep = check_columns_to_compare(self.df1, self.df2, self.columns_to_compare)
+        for col in df1_dropped_cols:
+            if col == 'ID':
+                self.contains_ID = False
             else:
-                if (col in self.df1.columns):
-                    self.columns_dropped_message += f"COLUMN DROPPED: '{col}' is only present in file 1\n"
-                elif (col in self.df2.columns):
-                    self.columns_dropped_message += f"COLUMN DROPPED: '{col}' is only present in file 2\n"
+                if col in df2_dropped_cols:
+                    self.columns_dropped_message += f"COMPARISON DROPPED: '{col}' is not present in either file\n"
                 else:
-                    self.columns_dropped_message += f"COLUMN DROPPED: '{col}' is not present in either file\n"
-                if (col == 'ID'):
-                    self.columns_dropped_message += "\tReplaced ID with Gene and AA_Change\n"
+                    self.columns_dropped_message += f"COMPARISON DROPPED: '{col}' is only present in file 1\n"
+        for col in df2_dropped_cols:
+            if col not in df1_dropped_cols:
+                if col == 'ID':
+                    self.contains_ID = False
+                else:
+                    self.columns_dropped_message += f"COMPARISON DROPPED: '{col}' is only present in file 2\n"
+
         if not self.contains_ID:
             can_replace = True
             for col in self.ID_replacement_cols:
@@ -150,7 +148,6 @@ class CompareAggregatedTSV():
             if can_replace:
                 print("Replacing ID with Gene and AA Change")
                 self.combine_gene_and_AA_change()
-                columns_to_keep.append('ID')
                 self.replaced_ID = True
         return columns_to_keep
 
@@ -161,19 +158,6 @@ class CompareAggregatedTSV():
 
         self.df1.drop(columns=self.ID_replacement_cols, inplace=True)
         self.df2.drop(columns=self.ID_replacement_cols, inplace=True)
-
-
-    def drop_additional_columns(self):
-        cols1_to_drop = [col for col in self.df1.columns if col not in self.columns_to_compare]
-        cols2_to_drop = [col for col in self.df2.columns if col not in self.columns_to_compare]
-
-        if cols1_to_drop:
-            self.df1.drop(columns=cols1_to_drop, inplace=True)
-
-        if cols2_to_drop:
-            self.df2.drop(columns=cols2_to_drop, inplace=True)
-
-        self.columns_to_compare.remove('ID')
 
 
     @staticmethod

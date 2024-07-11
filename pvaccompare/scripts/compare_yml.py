@@ -5,10 +5,10 @@ import re
 
 
 class CompareYML():
-    def __init__(self, run_utils, input_file1, input_file2):
-        self.run_utils = run_utils
+    def __init__(self, input_file1, input_file2, output_file):
         self.input_file1 = input_file1
         self.input_file2 = input_file2
+        self.output_path = output_file
         self.data1, self.data2 = self.load_files()
         self.differences = DeepDiff(self.data1, self.data2, ignore_order=True)
         self.output_mappings = {
@@ -27,7 +27,7 @@ class CompareYML():
 
 
     def interpret_diff(self):
-        with open(self.run_utils.output_path, 'w') as f:
+        with open(self.output_path, 'w') as f:
             f.write(f"Report Generation Date and Time: {datetime.datetime.now()}\n")
             f.write("\n============================== INPUT YML COMPARISON ==============================\n\n\n")
             f.write(f"File 1: {self.input_file1}\n")
