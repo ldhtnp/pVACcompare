@@ -8,6 +8,8 @@ from scripts import run_compare_yml
 from scripts import run_compare_json
 
 
+# TODO: Add parameters to choose columns for unaggregated tsv and reference match comparisons
+# TODO: Reference match files include multiple of the same variant, need to handle comparison differently?
 
 def define_parser():
     valid_columns = ["Gene", "AA Change", "Num Passing Transcripts", "Best Peptide", "Best Transcript", "Num Passing Peptides", "IC50 MT", "IC50 WT", "%%ile MT", "%%ile WT", "RNA Expr", "RNA VAF", "DNA VAF", "Tier"]
