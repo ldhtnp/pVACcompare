@@ -2,6 +2,7 @@ from scripts.compare_aggregated_tsv import CompareAggregatedTSV
 from scripts.run_utils import *
 
 
+
 def main(input_file1, input_file2, output_file, columns_to_compare):
     comparer = CompareAggregatedTSV(input_file1, input_file2, output_file, columns_to_compare)
     comparer.columns_to_compare = comparer.check_columns()
@@ -14,6 +15,7 @@ def main(input_file1, input_file2, output_file, columns_to_compare):
     else: # Number of rows is not equal
         comparer.df1, comparer.df2 = make_rows_equal(comparer.df1, comparer.df2)
         comparer.generate_comparison_report()
+
 
 
 if __name__ == "__main__":

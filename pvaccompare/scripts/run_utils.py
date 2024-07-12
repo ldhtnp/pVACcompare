@@ -32,6 +32,16 @@ def make_rows_equal(df1, df2):
 
 
 
+def create_id_column(df1, df2):
+    id_columns = ['Chromosome', 'Start', 'Stop', 'Reference', 'Variant']
+    df1['ID'] = df1[id_columns].apply(lambda x: '-'.join(map(str, x)), axis=1)
+    df2['ID'] = df2[id_columns].apply(lambda x: '-'.join(map(str, x)), axis=1)
+
+    df1.drop(columns=id_columns, inplace=True)
+    df2.drop(columns=id_columns, inplace=True)
+
+
+
 def drop_useless_columns(df1, df2, columns_to_compare):
     columns_to_keep = set(['ID'])
     if 'ID' not in df1.columns or 'ID' not in df2.columns:
@@ -72,7 +82,7 @@ def get_unique_variants(df1, df2, common_variants):
 
 
 
-def compare_rows_with_ID(args):
+def compare_rows_with_id(args):
     row_file1, row_file2, columns_to_compare = args
     differences = {}
     for col in columns_to_compare:
@@ -123,7 +133,7 @@ def get_file_differences(df1, df2, unique_variants_file1, unique_variants_file2,
     
     with Pool() as pool:
         args = [(df1.loc[df1['ID'] == cid], df2.loc[df2['ID'] == cid], columns_to_compare) for cid in common_ids]
-        results = pool.map(compare_rows_with_ID, args)
+        results = pool.map(compare_rows_with_id, args)
 
     differences = {}
     for result in results:

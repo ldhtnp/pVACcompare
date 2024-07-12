@@ -4,6 +4,7 @@ import datetime
 import re
 
 
+
 class CompareYML():
     def __init__(self, input_file1, input_file2, output_file):
         self.input_file1 = input_file1
@@ -19,11 +20,13 @@ class CompareYML():
         }
 
 
+
     def load_files(self):
         with open(self.input_file1, 'r') as f1, open(self.input_file2, 'r') as f2:
             data1 = yaml.safe_load(f1)
             data2 = yaml.safe_load(f2)
         return data1, data2
+
 
 
     def interpret_diff(self):

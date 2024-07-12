@@ -1,6 +1,5 @@
-import pandas as pd
-import re
 from scripts.run_utils import *
+
 
 
 class CompareAggregatedTSV():
@@ -28,9 +27,11 @@ class CompareAggregatedTSV():
         self.differences = {}
 
 
+
     def get_total_number_variants(self):
         total_variants = len(self.common_variants)+len(self.unique_variants_file1)+len(self.unique_variants_file2)
         return total_variants
+
 
 
     def get_number_column_differences(self):
@@ -39,6 +40,7 @@ class CompareAggregatedTSV():
             if (col != "ID"):
                 num_col_differences[col] = len(differences)
         return num_col_differences
+
 
 
     def generate_differences_summary(self):
@@ -58,6 +60,7 @@ class CompareAggregatedTSV():
                 summary += f"-----\n"
                 summary += f"Number of differences in {col}: {num_col_differences[col]}\n"
         return summary
+
 
 
     def generate_comparison_report(self):
@@ -104,6 +107,7 @@ class CompareAggregatedTSV():
             print("The Aggregated TSV files are identical.")
 
 
+
     def check_column_formatting(self):
         for col in self.df1.columns:
             for key, value in self.column_mappings.items():
@@ -119,6 +123,7 @@ class CompareAggregatedTSV():
                 elif col in value:
                     self.df2.rename(columns={col: key}, inplace=True)
                     break
+
 
 
     def check_columns(self):
@@ -150,6 +155,7 @@ class CompareAggregatedTSV():
                 self.combine_gene_and_AA_change()
                 self.replaced_id = True
         return columns_to_keep
+
 
 
     def combine_gene_and_AA_change(self):

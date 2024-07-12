@@ -1,10 +1,10 @@
 from scripts.run_utils import *
-from scripts.compare_unaggregated_tsv import CompareUnaggregatedTSV
+from scripts.compare_reference_matches_tsv import CompareReferenceMatchesTSV
 
 
 
 def main(input_file1, input_file2, output_file):
-    comparer = CompareUnaggregatedTSV(input_file1, input_file2, output_file)
+    comparer = CompareReferenceMatchesTSV(input_file1, input_file2, output_file)
 
     create_id_column(comparer.df1, comparer.df2)
     comparer.common_variants = get_common_variants(comparer.df1, comparer.df2)
