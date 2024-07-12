@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import re
 from multiprocessing import Pool
 
 
@@ -93,7 +94,31 @@ def compare_rows_with_ID(args):
 
 
 
-def get_file_differences(df1, df2, unique_variants_file1, unique_variants_file2, columns_to_compare):
+def extract_id_parts(id_str):
+    match = re.match(r'chr(\w+)-(\d+)-(\d+)-', id_str)
+    if match:
+        chr_part = match.group(1)
+        if chr_part.isdigit():
+            chr_part = int(chr_part)
+        else:
+            chr_part = float('inf')
+        return chr_part, int(match.group(2)), int(match.group(3))
+    return None, None, None
+
+
+
+def split_replaced_id(id_str):
+    try:
+        grp1, rest = id_str.split(' (')
+        grp2 = rest.split('-')[0].rstrip(')')
+        return grp1, grp2
+    except Exception as e:
+        print(f"Error splitting replaced ID: {id_str}, {e}")
+        return '', ''
+
+
+
+def get_file_differences(df1, df2, unique_variants_file1, unique_variants_file2, columns_to_compare, contains_id=True):
     common_ids = set(df1['ID']).intersection(set(df2['ID'])).difference(unique_variants_file1).difference(unique_variants_file2)
     
     with Pool() as pool:
@@ -106,6 +131,13 @@ def get_file_differences(df1, df2, unique_variants_file1, unique_variants_file2,
             if col not in differences:
                 differences[col] = []
             differences[col].extend(diffs)
+
+    # Sort the differences for each column based on 'ID'
+    for col in differences:
+        if contains_id:
+            differences[col] = sorted(differences[col], key=lambda x: extract_id_parts(x['ID']))
+        else:
+            differences[col] = sorted(differences[col], key=lambda x: split_replaced_id(x['ID']))
     
     if unique_variants_file1 or unique_variants_file2:
         if 'ID' not in differences:
@@ -120,4 +152,12 @@ def get_file_differences(df1, df2, unique_variants_file1, unique_variants_file2,
                     'File 1': '',
                     'File 2': variant
                 })
+
+    # Sort 'ID' differences
+    if 'ID' in differences:
+        if contains_id:
+            differences['ID'] = sorted(differences['ID'], key=lambda x: extract_id_parts(x['File 1'] or x['File 2']))
+        else:
+            differences['ID'] = sorted(differences['ID'], key=lambda x: split_replaced_id(x['File 1'] or x['File 2']))
+
     return differences

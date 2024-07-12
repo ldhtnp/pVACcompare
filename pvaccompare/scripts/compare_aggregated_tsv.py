@@ -9,8 +9,8 @@ class CompareAggregatedTSV():
         self.input_file2 = input_file2
         self.output_path = output_file
         self.df1, self.df2 = load_tsv_files(self.input_file1, self.input_file2)
-        self.contains_ID = True
-        self.replaced_ID = False
+        self.contains_id = True
+        self.replaced_id = False
         self.ID_replacement_cols = ['Gene', 'AA Change']
         self.column_mappings = { # Fill in different names/formatting between versions
             'Best Peptide': ['best peptide', 'best_peptide'],
@@ -61,7 +61,7 @@ class CompareAggregatedTSV():
 
 
     def generate_comparison_report(self):
-        self.differences = get_file_differences(self.df1, self.df2, self.unique_variants_file1, self.unique_variants_file2, self.columns_to_compare)
+        self.differences = get_file_differences(self.df1, self.df2, self.unique_variants_file1, self.unique_variants_file2, self.columns_to_compare, self.contains_id)
         
         if self.differences:
             first_unique_variant1 = True
@@ -75,7 +75,7 @@ class CompareAggregatedTSV():
                         f.write(f"\n{self.columns_dropped_message}")
                     differences_summary = self.generate_differences_summary()
                     f.write(differences_summary)
-                    if self.replaced_ID:
+                    if self.replaced_id:
                         f.write("\n\nID Format: 'Gene (AA_Change)'")
                     for col, diffs in self.differences.items():
                         if col == "ID":
@@ -127,7 +127,7 @@ class CompareAggregatedTSV():
         columns_to_keep = check_columns_to_compare(self.df1, self.df2, self.columns_to_compare)
         for col in df1_dropped_cols:
             if col == 'ID':
-                self.contains_ID = False
+                self.contains_id = False
             else:
                 if col in df2_dropped_cols:
                     self.columns_dropped_message += f"COMPARISON DROPPED: '{col}' is not present in either file\n"
@@ -136,11 +136,11 @@ class CompareAggregatedTSV():
         for col in df2_dropped_cols:
             if col not in df1_dropped_cols:
                 if col == 'ID':
-                    self.contains_ID = False
+                    self.contains_id = False
                 else:
                     self.columns_dropped_message += f"COMPARISON DROPPED: '{col}' is only present in file 2\n"
 
-        if not self.contains_ID:
+        if not self.contains_id:
             can_replace = True
             for col in self.ID_replacement_cols:
                 if col not in self.df1.columns or col not in self.df2.columns:
@@ -148,7 +148,7 @@ class CompareAggregatedTSV():
             if can_replace:
                 print("Replacing ID with Gene and AA Change")
                 self.combine_gene_and_AA_change()
-                self.replaced_ID = True
+                self.replaced_id = True
         return columns_to_keep
 
 
@@ -158,48 +158,3 @@ class CompareAggregatedTSV():
 
         self.df1.drop(columns=self.ID_replacement_cols, inplace=True)
         self.df2.drop(columns=self.ID_replacement_cols, inplace=True)
-
-
-    @staticmethod
-    def extract_parts_ID(id_str):
-        match = re.match(r'chr(\w+)-(\d+)-(\d+)-', id_str)
-        if match:
-            chr_part = match.group(1)
-            if chr_part.isdigit():
-                chr_part = int(chr_part)
-            else:
-                chr_part = float('inf')
-            return pd.Series([chr_part, int(match.group(2)), int(match.group(3))])
-        return pd.Series([None, None, None])
-
-    
-    def sort_rows(self):
-        if self.contains_ID:
-            # Extract parts and create columns for sorting
-            self.df1[['chr_num', 'num1', 'num2']] = self.df1['ID'].apply(self.extract_parts_ID)
-            self.df2[['chr_num', 'num1', 'num2']] = self.df2['ID'].apply(self.extract_parts_ID)
-
-            # Sort by the extracted columns
-            self.df1.sort_values(by=['chr_num', 'num1', 'num2'], inplace=True)
-            self.df2.sort_values(by=['chr_num', 'num1', 'num2'], inplace=True)
-
-            # Reset the indices
-            self.df1.reset_index(drop=True, inplace=True)
-            self.df2.reset_index(drop=True, inplace=True)
-
-            # Remove the temporary columns
-            self.df1.drop(columns=['chr_num', 'num1', 'num2'], inplace=True)
-            self.df2.drop(columns=['chr_num', 'num1', 'num2'], inplace=True)
-
-        elif self.replaced_ID:
-            temp_cols = self.df1['ID'].str.split('-', expand=True)
-            self.df1['grp1'] = temp_cols[0]
-            self.df1['grp2'] = temp_cols[1]
-            self.df1.sort_values(by=['grp1', 'grp2'], inplace=True)
-            self.df1.drop(columns=['grp1', 'grp2'], inplace=True)
-
-            temp_cols = self.df2['ID'].str.split('-', expand=True)
-            self.df2['grp1'] = temp_cols[0]
-            self.df2['grp2'] = temp_cols[1]
-            self.df2.sort_values(by=['grp1', 'grp2'], inplace=True)
-            self.df2.drop(columns=['grp1', 'grp2'], inplace=True)
