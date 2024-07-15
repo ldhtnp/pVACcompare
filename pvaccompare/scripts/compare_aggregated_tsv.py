@@ -71,7 +71,7 @@ class CompareAggregatedTSV():
             first_unique_variant2 = True
             try:
                 with open(self.output_path, 'a') as f:
-                    f.write("\n============================== AGGREGATED TSV COMPARISON ==============================\n\n\n")
+                    f.write("\n\n============================== AGGREGATED TSV COMPARISON ==============================\n\n\n")
                     f.write(f"File 1: {self.input_file1}\n")
                     f.write(f"File 2: {self.input_file2}\n")
                     if self.columns_dropped_message != "":

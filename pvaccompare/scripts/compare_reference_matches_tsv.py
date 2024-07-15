@@ -24,15 +24,13 @@ class CompareReferenceMatchesTSV():
             first_unique_variant2 = True
             try:
                 with open(self.output_path, 'a') as f:
-                    f.write("\n============================== REFERENCE MATCH TSV COMPARISON ==============================\n\n\n")
+                    f.write("\n\n============================== REFERENCE MATCH TSV COMPARISON ==============================\n\n\n")
                     f.write(f"File 1: {self.input_file1}\n")
                     f.write(f"File 2: {self.input_file2}\n")
                     # if self.columns_dropped_message != "":
                     #     f.write(f"\n{self.columns_dropped_message}")
                     # differences_summary = self.generate_differences_summary()
                     # f.write(differences_summary)
-                    # if self.replaced_ID:
-                    #     f.write("\n\nID Format: 'Gene (AA_Change)'")
                     for col, diffs in self.differences.items():
                         if col == "ID":
                             f.write(f"\n\n============[ UNIQUE VARIANTS ]============\n\n\n")
