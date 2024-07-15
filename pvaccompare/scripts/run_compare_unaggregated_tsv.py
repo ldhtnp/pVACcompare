@@ -8,7 +8,7 @@ def main(input_file1, input_file2, output_file):
 
     create_id_column(comparer.df1, comparer.df2)
     comparer.common_variants = get_common_variants(comparer.df1, comparer.df2)
-    comparer.unique_variants_file1, comparer.unique_variants_file2 = get_unique_variants(comparer.df2, comparer.df2, comparer.common_variants)
+    comparer.unique_variants_file1, comparer.unique_variants_file2 = get_unique_variants(comparer.df1, comparer.df2, comparer.common_variants)
 
     _, _ = drop_useless_columns(comparer.df1, comparer.df2, comparer.columns_to_compare)
     comparer.columns_to_compare = check_columns_to_compare(comparer.df1, comparer.df2, comparer.columns_to_compare)

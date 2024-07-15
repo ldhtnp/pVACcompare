@@ -165,9 +165,16 @@ def get_file_differences(df1, df2, unique_variants_file1, unique_variants_file2,
 
     # Sort 'ID' differences
     if 'ID' in differences:
+        file1_diffs = [diff for diff in differences['ID'] if diff['File 1']]
+        file2_diffs = [diff for diff in differences['ID'] if diff['File 2']]
+        
         if contains_id:
-            differences['ID'] = sorted(differences['ID'], key=lambda x: extract_id_parts(x['File 1'] or x['File 2']))
+            file1_diffs = sorted(file1_diffs, key=lambda x: extract_id_parts(x['File 1']))
+            file2_diffs = sorted(file2_diffs, key=lambda x: extract_id_parts(x['File 2']))
         else:
-            differences['ID'] = sorted(differences['ID'], key=lambda x: split_replaced_id(x['File 1'] or x['File 2']))
+            file1_diffs = sorted(file1_diffs, key=lambda x: split_replaced_id(x['File 1']))
+            file2_diffs = sorted(file2_diffs, key=lambda x: split_replaced_id(x['File 2']))
+        
+        differences['ID'] = file1_diffs + file2_diffs
 
     return differences

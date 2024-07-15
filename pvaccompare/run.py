@@ -9,6 +9,8 @@ from scripts import run_compare_json
 
 
 # TODO: Add parameters to choose columns for unaggregated tsv and reference match comparisons
+# What default columns should be used? What should the list of valid columns be?
+
 # TODO: Reference match files include multiple of the same variant, need to handle comparison differently?
 
 def define_parser():
