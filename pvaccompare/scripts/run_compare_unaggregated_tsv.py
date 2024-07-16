@@ -6,7 +6,7 @@ from scripts.compare_unaggregated_tsv import CompareUnaggregatedTSV
 def main(input_file1, input_file2, output_file):
     comparer = CompareUnaggregatedTSV(input_file1, input_file2, output_file)
 
-    create_id_column(comparer.df1, comparer.df2)
+    comparer.create_id_column()
     comparer.common_variants = get_common_variants(comparer.df1, comparer.df2)
     comparer.unique_variants_file1, comparer.unique_variants_file2 = get_unique_variants(comparer.df1, comparer.df2, comparer.common_variants)
 

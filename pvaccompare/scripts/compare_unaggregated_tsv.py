@@ -13,6 +13,16 @@ class CompareUnaggregatedTSV():
         self.unique_variants_file1 = set()
         self.unique_variants_file2 = set()
         self.differences = {}
+
+
+
+    def create_id_column(self):
+        id_columns = ['Chromosome', 'Start', 'Stop', 'Reference', 'Variant']
+        self.df1['ID'] = self.df1[id_columns].apply(lambda x: '-'.join(map(str, x)), axis=1)
+        self.df2['ID'] = self.df2[id_columns].apply(lambda x: '-'.join(map(str, x)), axis=1)
+
+        self.df1.drop(columns=id_columns, inplace=True)
+        self.df2.drop(columns=id_columns, inplace=True)
     
     
 
