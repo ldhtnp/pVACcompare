@@ -8,7 +8,7 @@ class CompareReferenceMatchesTSV():
         self.input_file2 = input_file2
         self.output_path = output_file
         self.df1, self.df2 = load_tsv_files(self.input_file1, self.input_file2)
-        self.columns_to_compare = ['Hit ID', 'Match Sequence', 'Query Sequence']
+        self.columns_to_compare = ['Hit ID', 'Match Window', 'Query Sequence']
         self.hits_file1 = {}
         self.hits_file2 = {}
         self.common_variants = set()
@@ -143,8 +143,7 @@ class CompareReferenceMatchesTSV():
                                         first_unique_variant2 = False
                                     f.write(f"\t{diff['File 2']}\n")
                         else:
-                            f.write(f"\n\n============[ DIFFERENCES IN {col.upper()} ]============\n\n\n")
-                            f.write("ID\tFile 1\tFile 2\n")
+                            f.write(f"\n\n============[ DIFFERENCES IN HITS ]============\n\n\n")
                             for diff in diffs:
                                 f.write(f"{diff['ID']}:\t{diff['File']}\t{diff['Hit ID']}\t{diff['Match Sequence']}\t{diff['Query Sequence']}\n")
             except Exception as e:

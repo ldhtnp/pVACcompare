@@ -11,6 +11,8 @@ from scripts import run_compare_json
 # TODO: Add parameter to choose columns for unaggregated tsv?
 # What default columns should be used? What should the list of valid columns be?
 
+# TODO: Add summary to unaggregated output and reference matches output?
+
 def define_parser():
     valid_columns = ["Gene", "AA Change", "Num Passing Transcripts", "Best Peptide", "Best Transcript", "Num Passing Peptides", "IC50 MT", "IC50 WT", "%%ile MT", "%%ile WT", "RNA Expr", "RNA VAF", "DNA VAF", "Tier"]
     default_columns = ["Num Passing Transcripts", "Best Peptide", "Best Transcript", "Num Passing Peptides", "Tier"]
