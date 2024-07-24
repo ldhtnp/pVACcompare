@@ -72,7 +72,7 @@ def get_unique_variants(df1, df2, common_variants):
 
 
 
-def compare_rows_with_id(args):
+def compare_rows_with_id(args, tolerance=0.1):
     row_file1, row_file2, columns_to_compare = args
     differences = {}
     for col in columns_to_compare:
@@ -81,6 +81,10 @@ def compare_rows_with_id(args):
 
         if pd.isna(value_file1) and pd.isna(value_file2):
             continue
+
+        if isinstance(value_file1, float) and isinstance(value_file2, float):
+            if abs(value_file1 - value_file2) <= tolerance:
+                continue
 
         if value_file1 != value_file2:
             if col not in differences:

@@ -8,7 +8,7 @@ class CompareReferenceMatchesTSV():
         self.input_file2 = input_file2
         self.output_path = output_file
         self.df1, self.df2 = load_tsv_files(self.input_file1, self.input_file2)
-        self.columns_to_compare = ['Hit ID', 'Match Window', 'Query Sequence']
+        self.columns_to_compare = ['Peptide', 'Match Window']
         self.hits_file1 = {}
         self.hits_file2 = {}
         self.common_variants = set()
@@ -19,24 +19,31 @@ class CompareReferenceMatchesTSV():
 
 
     def create_id_column(self):
-        id_columns = ['Chromosome', 'Start', 'Stop', 'Reference', 'Variant']
-
-        # Create the ID column with the format Chromosome-Start-Stop-Reference-Variant
+        id_columns = ['Chromosome', 'Start', 'Stop', 'Reference', 'Variant', 'Transcript', 'MT Epitope Seq', 'Hit ID', 'Match Start', 'Match Stop']
         self.df1['ID'] = self.df1[id_columns].apply(lambda x: '-'.join(map(str, x)), axis=1)
         self.df2['ID'] = self.df2[id_columns].apply(lambda x: '-'.join(map(str, x)), axis=1)
 
-        # Append Transcript and Peptide to the ID
-        self.df1['ID'] = self.df1.apply(lambda row: f"{row['ID']} ({row['Transcript']}) ({row['Peptide']})", axis=1)
-        self.df2['ID'] = self.df2.apply(lambda row: f"{row['ID']} ({row['Transcript']}) ({row['Peptide']})", axis=1)
-        
-        self.df1.drop(columns=id_columns + ['Transcript', 'Peptide'], inplace=True)
-        self.df2.drop(columns=id_columns + ['Transcript', 'Peptide'], inplace=True)
+        self.df1.drop(columns=id_columns, inplace=True)
+        self.df2.drop(columns=id_columns, inplace=True)
     
 
 
     def get_hit_count(self):
         self.hits_file1 = self.df1['ID'].value_counts().to_dict()
         self.hits_file2 = self.df2['ID'].value_counts().to_dict()
+
+    
+
+    @staticmethod
+    def output_dropped_cols(cols1_to_drop, cols2_to_drop):
+        for col in cols1_to_drop:
+            if col in cols2_to_drop:
+                print(f"REFERNCE MATCH COMPARISON DROPPED: '{col}' is not present in either file")
+            else:
+                print(f"REFERNCE MATCH COMPARISON DROPPED: '{col}' is only present in file 1")
+        for col in cols2_to_drop:
+            if col not in cols1_to_drop:
+                print(f"REFERNCE MATCH COMPARISON DROPPED: '{col}' is only present in file 2")
     
 
 

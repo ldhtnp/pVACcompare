@@ -11,7 +11,8 @@ def main(input_file1, input_file2, output_file):
     comparer.unique_variants_file1, comparer.unique_variants_file2 = get_unique_variants(comparer.df1, comparer.df2, comparer.common_variants)
     comparer.get_hit_count()
 
-    _, _ = drop_useless_columns(comparer.df1, comparer.df2, comparer.columns_to_compare)
+    cols1_to_drop, cols2_to_drop = drop_useless_columns(comparer.df1, comparer.df2, comparer.columns_to_compare)
+    comparer.output_dropped_cols(cols1_to_drop, cols2_to_drop)
     comparer.columns_to_compare = check_columns_to_compare(comparer.df1, comparer.df2, comparer.columns_to_compare)
     
     if comparer.df1.shape != comparer.df2.shape:

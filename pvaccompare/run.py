@@ -8,9 +8,6 @@ from scripts import run_compare_yml
 from scripts import run_compare_json
 
 
-# TODO: Add parameter to choose columns for unaggregated tsv?
-# What default columns should be used? What should the list of valid columns be?
-
 # TODO: Add summary to unaggregated output and reference matches output?
 
 def define_parser():
@@ -49,7 +46,9 @@ def run_comparison(prefix, results_folder1, results_folder2, output_file, column
     yml1_path = find_file(results_folder1, prefix + '/log', 'inputs.yml')
     yml2_path = find_file(results_folder2, prefix + '/log', 'inputs.yml')
     if yml1_path and yml2_path:
+        print("Running the input YML comparison tool...")
         run_compare_yml.main(yml1_path, yml2_path, output_file)
+        print(u'\u2713 Comparison completed successfully.')
     else:
         if yml1_path:
             print(f"Could not locate the input YML file in results folder 2 for {prefix.replace('_', ' ')}.")
@@ -61,7 +60,9 @@ def run_comparison(prefix, results_folder1, results_folder2, output_file, column
     json1_path = find_file(results_folder1, prefix + '/', '*all_epitopes.aggregated.metrics.json')
     json2_path = find_file(results_folder2, prefix + '/', '*all_epitopes.aggregated.metrics.json')
     if json1_path and json2_path:
+        print("\nRunning the metrics JSON comparison tool...")
         run_compare_json.main(json1_path, json2_path, output_file)
+        print(u'\u2713 Comparison completed successfully.')
     else:
         if json1_path:
             print(f"Could not locate the metrics JSON file in results folder 2 for {prefix.replace('_', ' ')}.")
@@ -73,7 +74,9 @@ def run_comparison(prefix, results_folder1, results_folder2, output_file, column
     agg_tsv1_path = find_file(results_folder1, prefix + '/', '*all_epitopes.aggregated.tsv')
     agg_tsv2_path = find_file(results_folder2, prefix + '/', '*all_epitopes.aggregated.tsv')
     if agg_tsv1_path and agg_tsv2_path:
+        print("\nRunning the aggregated TSV comparison tool...")
         run_compare_aggregated_tsv.main(agg_tsv1_path, agg_tsv2_path, output_file, columns_to_compare)
+        print(u'\u2713 Comparison completed successfully.')
     else:
         if agg_tsv1_path:
             print(f"Could not locate the aggregated TSV file in results folder 2 for {prefix.replace('_', ' ')}.")
@@ -85,7 +88,9 @@ def run_comparison(prefix, results_folder1, results_folder2, output_file, column
     unagg_tsv1_path = find_file(results_folder1, prefix + '/', '*all_epitopes.tsv')
     unagg_tsv2_path = find_file(results_folder2, prefix + '/', '*all_epitopes.tsv')
     if unagg_tsv1_path and unagg_tsv2_path:
+        print("\nRunning the unaggregated TSV comparison tool...")
         run_compare_unaggregated_tsv.main(unagg_tsv1_path, unagg_tsv2_path, output_file)
+        print(u'\u2713 Comparison completed successfully.')
     else:
         if unagg_tsv1_path:
             print(f"Could not locate the unaggregated TSV file in results folder 2 for {prefix.replace('_', ' ')}.")
@@ -97,7 +102,9 @@ def run_comparison(prefix, results_folder1, results_folder2, output_file, column
     refmatch_tsv1_path = find_file(results_folder1, prefix + '/', '*.reference_matches')
     refmatch_tsv2_path = find_file(results_folder2, prefix + '/', '*.reference_matches')
     if refmatch_tsv1_path and refmatch_tsv2_path:
+        print("\nRunning the reference match TSV comparison tool...")
         run_compare_reference_matches_tsv.main(refmatch_tsv1_path, refmatch_tsv2_path, output_file)
+        print(u'\u2713 Comparison completed successfully.')
     else:
         if refmatch_tsv1_path:
             print(f"Could not locate the reference match TSV file in results folder 2 for {prefix.replace('_', ' ')}.")
@@ -105,7 +112,7 @@ def run_comparison(prefix, results_folder1, results_folder2, output_file, column
             print(f"Could not locate the reference match TSV file in results folder 1 for {prefix.replace('_', ' ')}.")
         else:
             print(f"Could not locate the reference match TSV file in either results folder for {prefix.replace('_', ' ')}.")
-    print(f"Successfully generated {prefix.replace('_', ' ')} comparison report.")
+    print(f"\nSuccessfully generated {prefix.replace('_', ' ')} comparison report.")
 
 
 
