@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import re
-from multiprocessing import Pool
 
 
 
@@ -72,32 +71,6 @@ def get_unique_variants(df1, df2, common_variants):
 
 
 
-def compare_rows_with_id(args, tolerance=0.1):
-    row_file1, row_file2, columns_to_compare = args
-    differences = {}
-    for col in columns_to_compare:
-        value_file1 = row_file1[col].values[0] if not row_file1.empty else None
-        value_file2 = row_file2[col].values[0] if not row_file2.empty else None
-
-        if pd.isna(value_file1) and pd.isna(value_file2):
-            continue
-
-        if isinstance(value_file1, float) and isinstance(value_file2, float):
-            if abs(value_file1 - value_file2) <= tolerance:
-                continue
-
-        if value_file1 != value_file2:
-            if col not in differences:
-                differences[col] = []
-            differences[col].append({
-                'ID': row_file1['ID'].values[0] if not row_file1.empty else row_file2['ID'].values[0],
-                'File 1': value_file1,
-                'File 2': value_file2
-            })
-    return differences
-
-
-
 def extract_id_parts(id_str):
     match = re.match(r'chr(\w+)-(\d+)-(\d+)-', id_str)
     if match:
@@ -122,53 +95,46 @@ def split_replaced_id(id_str):
 
 
 
-def get_file_differences(df1, df2, unique_variants_file1, unique_variants_file2, columns_to_compare, contains_id=True):
-    common_ids = set(df1['ID']).intersection(set(df2['ID'])).difference(unique_variants_file1).difference(unique_variants_file2)
+def get_file_differences(df1, df2, columns_to_compare, unique_variants_file1, unique_variants_file2, contains_id=True, tolerance=0.1):
+    merged_df = pd.merge(df1, df2, on='ID', suffixes=('_file1', '_file2'))
     
-    with Pool() as pool:
-        args = [(df1.loc[df1['ID'] == cid], df2.loc[df2['ID'] == cid], columns_to_compare) for cid in common_ids]
-        results = pool.map(compare_rows_with_id, args)
-
     differences = {}
-    for result in results:
-        for col, diffs in result.items():
-            if col not in differences:
-                differences[col] = []
-            differences[col].extend(diffs)
-
-    # Sort the differences for each column based on 'ID'
+    for col in columns_to_compare:
+        col_file1 = f"{col}_file1"
+        col_file2 = f"{col}_file2"
+        
+        mask = (merged_df[col_file1].notna() | merged_df[col_file2].notna()) & (merged_df[col_file1] != merged_df[col_file2])
+        if np.issubdtype(merged_df[col_file1].dtype, np.number) and np.issubdtype(merged_df[col_file2].dtype, np.number):
+            mask = mask | (np.abs(merged_df[col_file1] - merged_df[col_file2]) > tolerance)
+        
+        diff = merged_df[mask][['ID', col_file1, col_file2]]
+        if not diff.empty:
+            differences[col] = diff.to_dict('records')
+    
     for col in differences:
         if contains_id:
             differences[col] = sorted(differences[col], key=lambda x: extract_id_parts(x['ID']))
         else:
             differences[col] = sorted(differences[col], key=lambda x: split_replaced_id(x['ID']))
     
+    unique_variants = []
+    # Include unique variants
     if unique_variants_file1 or unique_variants_file2:
-        if 'ID' not in differences:
-            differences['ID'] = []
         for variant in unique_variants_file1:
-            differences['ID'].append({
-                    'File 1': variant,
-                    'File 2': ''
-                })
+            unique_variants.append({
+                'File 1': variant,
+                'File 2': ''
+            })
         for variant in unique_variants_file2:
-            differences['ID'].append({
-                    'File 1': '',
-                    'File 2': variant
-                })
-
-    # Sort 'ID' differences
-    if 'ID' in differences:
-        file1_diffs = [diff for diff in differences['ID'] if diff['File 1']]
-        file2_diffs = [diff for diff in differences['ID'] if diff['File 2']]
-        
-        if contains_id:
-            file1_diffs = sorted(file1_diffs, key=lambda x: extract_id_parts(x['File 1']))
-            file2_diffs = sorted(file2_diffs, key=lambda x: extract_id_parts(x['File 2']))
-        else:
-            file1_diffs = sorted(file1_diffs, key=lambda x: split_replaced_id(x['File 1']))
-            file2_diffs = sorted(file2_diffs, key=lambda x: split_replaced_id(x['File 2']))
-        
-        differences['ID'] = file1_diffs + file2_diffs
-
-    return differences
+            unique_variants.append({
+                'File 1': '',
+                'File 2': variant
+            })
+    
+    # Sort unique variants
+    if contains_id:
+        unique_variants = sorted(unique_variants, key=lambda x: extract_id_parts(x['File 1'] if x['File 1'] else x['File 2']))
+    else:
+        unique_variants = sorted(unique_variants, key=lambda x: split_replaced_id(x['File 1'] if x['File 1'] else x['File 2']))
+    
+    return differences, unique_variants

@@ -40,9 +40,9 @@ class CompareUnaggregatedTSV():
     
 
     def generate_comparison_report(self):
-        self.differences = get_file_differences(self.df1, self.df2, self.unique_variants_file1, self.unique_variants_file2, self.columns_to_compare)
+        self.differences, self.unique_variants = get_file_differences(self.df1, self.df2, self.columns_to_compare, self.unique_variants_file1, self.unique_variants_file2)
         
-        if self.differences:
+        if self.differences or self.unique_variants:
             first_unique_variant1 = True
             first_unique_variant2 = True
             try:
@@ -54,27 +54,30 @@ class CompareUnaggregatedTSV():
                     #     f.write(f"\n{self.columns_dropped_message}")
                     # differences_summary = self.generate_differences_summary()
                     # f.write(differences_summary)
+                                
                     for col, diffs in self.differences.items():
-                        if col == "ID":
-                            f.write(f"\n\n============[ UNIQUE VARIANTS ]============\n\n\n")
-                            for diff in diffs:
-                                if (diff['File 2'] == ''):
-                                    if first_unique_variant1:
-                                        f.write("Variants Unique to File 1:\n")
-                                        first_unique_variant1 = False
-                                    f.write(f"\t{diff['File 1']}\n")
-                                else:
-                                    if first_unique_variant2:
-                                        if not first_unique_variant1:
-                                            f.write("\n")
-                                        f.write("Variants Unique to File 2:\n")
-                                        first_unique_variant2 = False
-                                    f.write(f"\t{diff['File 2']}\n")
-                        else:
-                            f.write(f"\n\n============[ DIFFERENCES IN {col.upper()} ]============\n\n\n")
-                            f.write("ID\tFile 1\tFile 2\n")
-                            for diff in diffs:
-                                f.write(f"{diff['ID']}:\t{diff['File 1']}\t->\t{diff['File 2']}\n")
+                        f.write(f"\n\n============[ DIFFERENCES IN {col.upper()} ]============\n\n\n")
+                        f.write("ID\tFile 1\tFile 2\n")
+                        for diff in diffs:
+                            file1_value = diff.get(f'{col}_file1', 'NOT FOUND')
+                            file2_value = diff.get(f'{col}_file2', 'NOT FOUND')
+                            f.write(f"{diff['ID']}:\t{file1_value}\t->\t{file2_value}\n")
+
+                    if self.unique_variants:
+                        f.write(f"\n\n============[ UNIQUE VARIANTS ]============\n\n\n")
+                        for diff in self.unique_variants:
+                            if diff['File 2'] == '':
+                                if first_unique_variant1:
+                                    f.write("Variants Unique to File 1:\n")
+                                    first_unique_variant1 = False
+                                f.write(f"\t{diff['File 1']}\n")
+                            else:
+                                if first_unique_variant2:
+                                    if not first_unique_variant1:
+                                        f.write("\n")
+                                    f.write("Variants Unique to File 2:\n")
+                                    first_unique_variant2 = False
+                                f.write(f"\t{diff['File 2']}\n")
             except Exception as e:
                 raise Exception(f"Error writing differences to file: {e}")
         else:

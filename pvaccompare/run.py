@@ -51,11 +51,12 @@ def run_comparison(prefix, results_folder1, results_folder2, output_file, column
         print(u'\u2713 Comparison completed successfully.')
     else:
         if yml1_path:
-            print(f"Could not locate the input YML file in results folder 2 for {prefix.replace('_', ' ')}.")
+            print(f"ERROR: Could not locate the input YML file in results folder 2 for {prefix.replace('_', ' ')}.")
         elif yml2_path:
-            print(f"Could not locate the input YML file in results folder 1 for {prefix.replace('_', ' ')}.")
+            print(f"ERROR: Could not locate the input YML file in results folder 1 for {prefix.replace('_', ' ')}.")
         else:
-            print(f"Could not locate the input YML file in either results folder for {prefix.replace('_', ' ')}.")
+            print(f"ERROR: Could not locate the input YML file in either results folder for {prefix.replace('_', ' ')}.")
+        print(u'\u2716 Comparison skipped.')
     
     json1_path = find_file(results_folder1, prefix + '/', '*all_epitopes.aggregated.metrics.json')
     json2_path = find_file(results_folder2, prefix + '/', '*all_epitopes.aggregated.metrics.json')
@@ -65,11 +66,12 @@ def run_comparison(prefix, results_folder1, results_folder2, output_file, column
         print(u'\u2713 Comparison completed successfully.')
     else:
         if json1_path:
-            print(f"Could not locate the metrics JSON file in results folder 2 for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the metrics JSON file in results folder 2 for {prefix.replace('_', ' ')}.")
         elif json2_path:
-            print(f"Could not locate the metrics JSON file in results folder 1 for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the metrics JSON file in results folder 1 for {prefix.replace('_', ' ')}.")
         else:
-            print(f"Could not locate the metrics JSON file in either results folder for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the metrics JSON file in either results folder for {prefix.replace('_', ' ')}.")
+        print(u'\u2716 Comparison skipped.')
 
     agg_tsv1_path = find_file(results_folder1, prefix + '/', '*all_epitopes.aggregated.tsv')
     agg_tsv2_path = find_file(results_folder2, prefix + '/', '*all_epitopes.aggregated.tsv')
@@ -79,11 +81,12 @@ def run_comparison(prefix, results_folder1, results_folder2, output_file, column
         print(u'\u2713 Comparison completed successfully.')
     else:
         if agg_tsv1_path:
-            print(f"Could not locate the aggregated TSV file in results folder 2 for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the aggregated TSV file in results folder 2 for {prefix.replace('_', ' ')}.")
         elif agg_tsv2_path:
-            print(f"Could not locate the aggregated TSV file in results folder 1 for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the aggregated TSV file in results folder 1 for {prefix.replace('_', ' ')}.")
         else:
-            print(f"Could not locate the aggregated TSV file in either results folder for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the aggregated TSV file in either results folder for {prefix.replace('_', ' ')}.")
+        print(u'\u2716 Comparison skipped.')
     
     unagg_tsv1_path = find_file(results_folder1, prefix + '/', '*all_epitopes.tsv')
     unagg_tsv2_path = find_file(results_folder2, prefix + '/', '*all_epitopes.tsv')
@@ -93,11 +96,12 @@ def run_comparison(prefix, results_folder1, results_folder2, output_file, column
         print(u'\u2713 Comparison completed successfully.')
     else:
         if unagg_tsv1_path:
-            print(f"Could not locate the unaggregated TSV file in results folder 2 for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the unaggregated TSV file in results folder 2 for {prefix.replace('_', ' ')}.")
         elif unagg_tsv2_path:
-            print(f"Could not locate the unaggregated TSV file in results folder 1 for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the unaggregated TSV file in results folder 1 for {prefix.replace('_', ' ')}.")
         else:
-            print(f"Could not locate the unaggregated TSV file in either results folder for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the unaggregated TSV file in either results folder for {prefix.replace('_', ' ')}.")
+        print(u'\u2716 Comparison skipped.')
     
     refmatch_tsv1_path = find_file(results_folder1, prefix + '/', '*.reference_matches')
     refmatch_tsv2_path = find_file(results_folder2, prefix + '/', '*.reference_matches')
@@ -107,12 +111,15 @@ def run_comparison(prefix, results_folder1, results_folder2, output_file, column
         print(u'\u2713 Comparison completed successfully.')
     else:
         if refmatch_tsv1_path:
-            print(f"Could not locate the reference match TSV file in results folder 2 for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the reference match TSV file in results folder 2 for {prefix.replace('_', ' ')}.")
         elif refmatch_tsv2_path:
-            print(f"Could not locate the reference match TSV file in results folder 1 for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the reference match TSV file in results folder 1 for {prefix.replace('_', ' ')}.")
         else:
-            print(f"Could not locate the reference match TSV file in either results folder for {prefix.replace('_', ' ')}.")
-    print(f"\nSuccessfully generated {prefix.replace('_', ' ')} comparison report.")
+            print(f"\nERROR: Could not locate the reference match TSV file in either results folder for {prefix.replace('_', ' ')}.")
+        print(u'\u2716 Comparison skipped.')
+    print('\n' + u'\u2500'*55)
+    print(f"Successfully generated {prefix.replace('_', ' ')} comparison report.")
+    print(u'\u2500'*55)
 
 
 
