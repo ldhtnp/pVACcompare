@@ -135,7 +135,8 @@ class CompareReferenceMatchesTSV():
                     for col, diffs in self.differences.items():
                         if col == "ID":
                             f.write(f"\n\n============[ UNIQUE VARIANTS ]============\n\n\n")
-                            f.write("FORMAT: Chromosome-Start-Stop-Reference-Variant (Transcript) (Peptide) : Number of Hits\n\n")
+                            #id_columns = ['Chromosome', 'Start', 'Stop', 'Reference', 'Variant', 'Transcript', 'MT Epitope Seq', 'Hit ID', 'Match Start', 'Match Stop']
+                            f.write("FORMAT: Chromosome - Start - Stop - Reference - Variant - Transcript - MT_Epitope_Seq - Hit_ID - Match_Start - Match_Stop : Number of Hits\n\n")
                             for diff in diffs:
                                 if (diff['File 2'] == ''):
                                     if first_unique_variant1:

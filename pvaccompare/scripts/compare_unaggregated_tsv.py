@@ -18,7 +18,7 @@ class CompareUnaggregatedTSV():
 
 
     def create_id_column(self):
-        id_columns = ['Chromosome', 'Start', 'Stop', 'Reference', 'Variant', 'HLA Allele', 'MT Epitope Seq']
+        id_columns = ['Chromosome', 'Start', 'Stop', 'Reference', 'Variant', 'HLA Allele', 'MT Epitope Seq', 'Index']
         self.df1['ID'] = self.df1[id_columns].apply(lambda x: '-'.join(map(str, x)), axis=1)
         self.df2['ID'] = self.df2[id_columns].apply(lambda x: '-'.join(map(str, x)), axis=1)
 
