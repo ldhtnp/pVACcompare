@@ -36,24 +36,6 @@ class CompareReferenceMatchesTSV():
     def get_hit_count(self):
         self.hits_file1 = self.df1['ID'].value_counts().to_dict()
         self.hits_file2 = self.df2['ID'].value_counts().to_dict()
-
-    
-
-    @staticmethod
-    def output_dropped_cols(cols1_to_drop, cols2_to_drop):
-        """
-        Purpose:    Outputs the dropped comparison columns to the terminal
-        Modifies:   Nothing
-        Returns:    None
-        """
-        for col in cols1_to_drop:
-            if col in cols2_to_drop:
-                print(u'\u2022', f"Comparison dropped: '{col}' is not present in either file")
-            else:
-                print(u'\u2022', f"Comparison dropped: '{col}' is only present in file 1")
-        for col in cols2_to_drop:
-            if col not in cols1_to_drop:
-                print(u'\u2022', f"Comparison dropped: '{col}' is only present in file 2")
     
 
 

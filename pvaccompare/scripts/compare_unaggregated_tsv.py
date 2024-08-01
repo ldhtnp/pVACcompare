@@ -30,23 +30,6 @@ class CompareUnaggregatedTSV():
         self.df1.drop(columns=id_columns, inplace=True)
         self.df2.drop(columns=id_columns, inplace=True)
     
-
-    @staticmethod
-    def output_dropped_cols(cols1_to_drop, cols2_to_drop):
-        """
-        Purpose:    Outputs the dropped comparison columns to the terminal
-        Modifies:   Nothing
-        Returns:    None
-        """
-        for col in cols1_to_drop:
-            if col in cols2_to_drop:
-                print(u'\u2022', f"Comparison dropped: '{col}' is not present in either file")
-            else:
-                print(u'\u2022', f"Comparison dropped: '{col}' is only present in file 1")
-        for col in cols2_to_drop:
-            if col not in cols1_to_drop:
-                print(u'\u2022', f"Comparison dropped: '{col}' is only present in file 2")
-    
     
 
     def generate_comparison_report(self):

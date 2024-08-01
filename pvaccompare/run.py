@@ -14,7 +14,6 @@ from scripts import run_compare_json
 # TODO: Modify check_columns in aggregated tsv comparison
 # TODO: Write all column dropped messages to generated report
 # TODO: Write unique record column format to generated report
-# TODO: Move dropped comparison printing function to run_utils
 # TODO: Add parameters for specifying columns included
 
 def define_parser():

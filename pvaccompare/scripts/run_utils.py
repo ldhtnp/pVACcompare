@@ -38,6 +38,28 @@ def check_column_formatting(df1, df2):
 
 
 
+def output_dropped_cols(cols1_to_drop, cols2_to_drop):
+        """
+        Purpose:    Outputs the dropped comparison columns to the terminal and creates a columns dropped message for the generated report
+        Modifies:   Nothing
+        Returns:    String columns_dropped_message
+        """
+        columns_dropped_message = ""
+        for col in cols1_to_drop:
+            if col in cols2_to_drop:
+                print(u'\u2022', f"Comparison dropped: '{col}' is not present in either file")
+                columns_dropped_message += f"Comparison dropped: '{col}' is not present in either file\n"
+            else:
+                print(u'\u2022', f"Comparison dropped: '{col}' is only present in file 1")
+                columns_dropped_message += f"Comparison dropped: '{col}' is only present in file 1\n"
+        for col in cols2_to_drop:
+            if col not in cols1_to_drop:
+                print(u'\u2022', f"Comparison dropped: '{col}' is only present in file 2")
+                columns_dropped_message += f"Comparison dropped: '{col}' is only present in file 2\n"
+        return columns_dropped_message
+
+
+
 def get_common_variants(df1, df2):
     """
     Purpose:    Find and store IDs shared between the two given dataframes

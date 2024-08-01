@@ -129,25 +129,12 @@ class CompareAggregatedTSV():
         Modifies:   self.contains_id, self.columns_dropped_message
         Returns:    List of columns to keep in the comparison
         """
-        df1_dropped_cols, df2_dropped_cols = drop_useless_columns(self.df1, self.df2, self.columns_to_compare)
+        cols1_to_drop, cols2_to_drop = drop_useless_columns(self.df1, self.df2, self.columns_to_compare)
         columns_to_keep = check_columns_to_compare(self.df1, self.df2, self.columns_to_compare)
-        for col in df1_dropped_cols:
-            if col == 'ID':
-                self.contains_id = False
-            else:
-                if col in df2_dropped_cols:
-                    print(u'\u2022', f"Comparison dropped: '{col}' is not present in either file")
-                    self.columns_dropped_message += f"Comparison dropped: '{col}' is not present in either file\n"
-                else:
-                    print(u'\u2022', f"Comparison dropped: '{col}' is only present in file 1")
-                    self.columns_dropped_message += f"Comparison dropped: '{col}' is only present in file 1\n"
-        for col in df2_dropped_cols:
-            if col not in df1_dropped_cols:
-                if col == 'ID':
-                    self.contains_id = False
-                else:
-                    print(u'\u2022', f"Comparison dropped: '{col}' is only present in file 2")
-                    self.columns_dropped_message += f"Comparison dropped: '{col}' is only present in file 2\n"
+        self.columns_dropped_message = output_dropped_cols(cols1_to_drop, cols2_to_drop)
+
+        if 'ID' in cols1_to_drop or 'ID' in cols2_to_drop:
+            self.contains_id = False
 
         if not self.contains_id:
             can_replace = True
@@ -155,8 +142,8 @@ class CompareAggregatedTSV():
                 if col not in self.df1.columns or col not in self.df2.columns:
                     can_replace = False
             if can_replace:
-                print(u'\u2022', "Replacing ID with Gene and AA Change")
                 self.combine_gene_and_AA_change()
+                print(u'\u2022', "Replaced ID with Gene and AA Change")
                 self.replaced_id = True
         return columns_to_keep
 
