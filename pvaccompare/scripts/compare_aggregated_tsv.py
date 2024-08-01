@@ -11,7 +11,6 @@ class CompareAggregatedTSV():
         self.contains_id = True
         self.replaced_id = False
         self.ID_replacement_cols = ['Gene', 'AA Change']
-        self.columns_dropped_message = ""
         self.columns_to_compare = columns_to_compare
         self.common_variants = set()
         self.unique_variants_file1 = set()
@@ -67,59 +66,6 @@ class CompareAggregatedTSV():
                 summary += f"-----\n"
                 summary += f"Number of differences in {col}: {num_col_differences[col]}\n"
         return summary
-
-
-
-    def generate_comparison_report(self):
-        """
-        Purpose:    Write all of the aggregated tsv differences found to the generated report
-        Modifies:   Nothing
-        Returns:    None
-        """
-        self.differences, self.unique_variants = get_file_differences(self.df1, self.df2, self.columns_to_compare, self.unique_variants_file1, self.unique_variants_file2, self.contains_id)
-        
-        if self.differences or self.unique_variants:
-            first_unique_variant1 = True
-            first_unique_variant2 = True
-            try:
-                with open(self.output_path, 'a') as f:
-                    f.write("\n\n============================== AGGREGATED TSV COMPARISON ==============================\n\n\n")
-                    f.write(f"File 1: {self.input_file1}\n")
-                    f.write(f"File 2: {self.input_file2}\n")
-                    if self.columns_dropped_message != "":
-                        f.write(f"\n{self.columns_dropped_message}")
-                    differences_summary = self.generate_differences_summary()
-                    f.write(differences_summary)
-                    if self.replaced_id:
-                        f.write("\n\nID Format: 'Gene (AA_Change)'")
-                                
-                    for col, diffs in self.differences.items():
-                        f.write(f"\n\n============[ DIFFERENCES IN {col.upper()} ]============\n\n\n")
-                        f.write("ID\tFile 1\tFile 2\n")
-                        for diff in diffs:
-                            file1_value = diff.get(f'{col}_file1', 'NOT FOUND')
-                            file2_value = diff.get(f'{col}_file2', 'NOT FOUND')
-                            f.write(f"{diff['ID']}:\t{file1_value}\t->\t{file2_value}\n")
-
-                    if self.unique_variants:
-                        f.write(f"\n\n============[ UNIQUE VARIANTS ]============\n\n\n")
-                        for diff in self.unique_variants:
-                            if diff['File 2'] == '':
-                                if first_unique_variant1:
-                                    f.write("Variants Unique to File 1:\n")
-                                    first_unique_variant1 = False
-                                f.write(f"\t{diff['File 1']}\n")
-                            else:
-                                if first_unique_variant2:
-                                    if not first_unique_variant1:
-                                        f.write("\n")
-                                    f.write("Variants Unique to File 2:\n")
-                                    first_unique_variant2 = False
-                                f.write(f"\t{diff['File 2']}\n")
-            except Exception as e:
-                raise Exception(f"Error writing differences to file: {e}")
-        else:
-            print("The Aggregated TSV files are identical.")
 
 
 

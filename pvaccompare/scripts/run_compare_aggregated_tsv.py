@@ -13,18 +13,18 @@ def main(input_file1, input_file2, output_file, columns_to_compare):
     check_column_formatting(comparer.df1, comparer.df2)
 
     cols1_to_drop, cols2_to_drop = drop_useless_columns(comparer.df1, comparer.df2, comparer.columns_to_compare)
-    comparer.columns_dropped_message = output_dropped_cols(cols1_to_drop, cols2_to_drop)
+    columns_dropped_message = output_dropped_cols(cols1_to_drop, cols2_to_drop)
     comparer.columns_to_compare = check_columns_to_compare(comparer.df1, comparer.df2, comparer.columns_to_compare)
     comparer.check_id(cols1_to_drop, cols2_to_drop)
     
     comparer.common_variants = get_common_variants(comparer.df1, comparer.df2)
     comparer.unique_variants_file1, comparer.unique_variants_file2 = get_unique_variants(comparer.df1, comparer.df2, comparer.common_variants)
 
-    if (comparer.df1.shape == comparer.df2.shape):
-        comparer.generate_comparison_report()
-    else: # Number of rows is not equal
+    if (comparer.df1.shape != comparer.df2.shape):
         comparer.df1, comparer.df2 = make_rows_equal(comparer.df1, comparer.df2)
-        comparer.generate_comparison_report()
+    differences, unique_variants = get_file_differences(comparer.df1, comparer.df2, comparer.columns_to_compare, comparer.unique_variants_file1, comparer.unique_variants_file2, comparer.contains_id)
+    differences_summary = comparer.generate_differences_summary()
+    generate_comparison_report("Aggregated TSV", differences, unique_variants, comparer.input_file1, comparer.input_file2, comparer.output_path, columns_dropped_message, differences_summary, comparer.replaced_id)
 
 
 
