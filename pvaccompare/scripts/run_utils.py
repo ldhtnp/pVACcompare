@@ -4,6 +4,40 @@ import re
 
 
 
+def check_column_formatting(df1, df2):
+        """
+        Purpose:    Rename columns based on the mappings dictionary to make column names the same
+        Modifies:   df1 and df2
+        Returns:    None
+        """
+        column_mappings = { # Fill in different names/formatting between versions
+            'Best Peptide': ['best peptide', 'best_peptide'],
+            'Best Transcript': ['best transcript', 'best_transcript'],
+            'Tier': ['tier'],
+            'AA Change': ['AA_change'],
+            'Num Passing Transcripts': ['Num_Transcript'],
+            'Num Passing Peptides': ['Num_Peptides'],
+        }
+
+        for col in df1.columns:
+            for key, value in column_mappings.items():
+                if col == key:
+                    break
+                elif col in value:
+                    print(u'\u2022', f"Renamed '{col}' to '{key}' in file 1")
+                    df1.rename(columns={col: key}, inplace=True)
+                    break
+        for col in df2.columns:
+            for key, value in column_mappings.items():
+                if col == key:
+                    break
+                elif col in value:
+                    print(u'\u2022', f"Renamed '{col}' to '{key}' in file 2")
+                    df2.rename(columns={col: key}, inplace=True)
+                    break
+
+
+
 def get_common_variants(df1, df2):
     """
     Purpose:    Find and store IDs shared between the two given dataframes

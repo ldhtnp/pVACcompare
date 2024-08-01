@@ -9,6 +9,13 @@ from scripts import run_compare_json
 
 
 # TODO: Add summary to unaggregated output and reference matches output?
+# TODO: Move report writing to run_utils instead of custom function for each comparison
+# TODO: Remove custom file check in reference match comparison, use run_utils
+# TODO: Modify check_columns in aggregated tsv comparison
+# TODO: Write all column dropped messages to generated report
+# TODO: Write unique record column format to generated report
+# TODO: Move dropped comparison printing function to run_utils
+# TODO: Add parameters for specifying columns included
 
 def define_parser():
     """
@@ -144,6 +151,11 @@ def run_comparison(prefix, results_folder1, results_folder2, output_file, column
 
 
 def main():
+    """
+    Purpose:    Control function for the whole tool, calls run_comparison which calls all of the comparisons
+    Modifies:   Nothing
+    Returns:    None
+    """
     parser = define_parser()
     args = parser.parse_args()
 

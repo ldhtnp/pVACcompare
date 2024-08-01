@@ -10,6 +10,7 @@ def main(input_file1, input_file2, output_file):
     Returns:    None
     """
     comparer = CompareReferenceMatchesTSV(input_file1, input_file2, output_file)
+    check_column_formatting(comparer.df1, comparer.df2)
 
     comparer.create_id_column()
     comparer.common_variants = get_common_variants(comparer.df1, comparer.df2)

@@ -48,12 +48,12 @@ class CompareReferenceMatchesTSV():
         """
         for col in cols1_to_drop:
             if col in cols2_to_drop:
-                print(f"REFERENCE MATCH COMPARISON DROPPED: '{col}' is not present in either file")
+                print(u'\u2022', f"Comparison dropped: '{col}' is not present in either file")
             else:
-                print(f"REFERENCE MATCH COMPARISON DROPPED: '{col}' is only present in file 1")
+                print(u'\u2022', f"Comparison dropped: '{col}' is only present in file 1")
         for col in cols2_to_drop:
             if col not in cols1_to_drop:
-                print(f"REFERENCE MATCH COMPARISON DROPPED: '{col}' is only present in file 2")
+                print(u'\u2022', f"Comparison dropped: '{col}' is only present in file 2")
     
 
 

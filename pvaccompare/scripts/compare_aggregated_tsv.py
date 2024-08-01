@@ -11,14 +11,6 @@ class CompareAggregatedTSV():
         self.contains_id = True
         self.replaced_id = False
         self.ID_replacement_cols = ['Gene', 'AA Change']
-        self.column_mappings = { # Fill in different names/formatting between versions
-            'Best Peptide': ['best peptide', 'best_peptide'],
-            'Best Transcript': ['best transcript', 'best_transcript'],
-            'Tier': ['tier'],
-            'AA Change': ['AA_change'],
-            'Num Passing Transcripts': ['Num_Transcript'],
-            'Num Passing Peptides': ['Num_Peptides'],
-        }
         self.columns_dropped_message = ""
         self.columns_to_compare = columns_to_compare
         self.common_variants = set()
@@ -131,36 +123,12 @@ class CompareAggregatedTSV():
 
 
 
-    def check_column_formatting(self):
-        """
-        Purpose:    Rename columns based on the mappings dictionary to make column names the same
-        Modifies:   df1 and df2
-        Returns:    None
-        """
-        for col in self.df1.columns:
-            for key, value in self.column_mappings.items():
-                if col == key:
-                    break
-                elif col in value:
-                    self.df1.rename(columns={col: key}, inplace=True)
-                    break
-        for col in self.df2.columns:
-            for key, value in self.column_mappings.items():
-                if col == key:
-                    break
-                elif col in value:
-                    self.df2.rename(columns={col: key}, inplace=True)
-                    break
-
-
-
     def check_columns(self):
         """
         Purpose:    Replace ID with Gene-AA_change if needed, output comparisons that have been dropped
         Modifies:   self.contains_id, self.columns_dropped_message
         Returns:    List of columns to keep in the comparison
         """
-        self.check_column_formatting()
         df1_dropped_cols, df2_dropped_cols = drop_useless_columns(self.df1, self.df2, self.columns_to_compare)
         columns_to_keep = check_columns_to_compare(self.df1, self.df2, self.columns_to_compare)
         for col in df1_dropped_cols:
@@ -168,15 +136,18 @@ class CompareAggregatedTSV():
                 self.contains_id = False
             else:
                 if col in df2_dropped_cols:
-                    self.columns_dropped_message += f"COMPARISON DROPPED: '{col}' is not present in either file\n"
+                    print(u'\u2022', f"Comparison dropped: '{col}' is not present in either file")
+                    self.columns_dropped_message += f"Comparison dropped: '{col}' is not present in either file\n"
                 else:
-                    self.columns_dropped_message += f"COMPARISON DROPPED: '{col}' is only present in file 1\n"
+                    print(u'\u2022', f"Comparison dropped: '{col}' is only present in file 1")
+                    self.columns_dropped_message += f"Comparison dropped: '{col}' is only present in file 1\n"
         for col in df2_dropped_cols:
             if col not in df1_dropped_cols:
                 if col == 'ID':
                     self.contains_id = False
                 else:
-                    self.columns_dropped_message += f"COMPARISON DROPPED: '{col}' is only present in file 2\n"
+                    print(u'\u2022', f"Comparison dropped: '{col}' is only present in file 2")
+                    self.columns_dropped_message += f"Comparison dropped: '{col}' is only present in file 2\n"
 
         if not self.contains_id:
             can_replace = True
@@ -184,7 +155,7 @@ class CompareAggregatedTSV():
                 if col not in self.df1.columns or col not in self.df2.columns:
                     can_replace = False
             if can_replace:
-                print("Replacing ID with Gene and AA Change")
+                print(u'\u2022', "Replacing ID with Gene and AA Change")
                 self.combine_gene_and_AA_change()
                 self.replaced_id = True
         return columns_to_keep

@@ -10,6 +10,7 @@ def main(input_file1, input_file2, output_file, columns_to_compare):
     Returns:    None
     """
     comparer = CompareAggregatedTSV(input_file1, input_file2, output_file, columns_to_compare)
+    check_column_formatting(comparer.df1, comparer.df2)
     comparer.columns_to_compare = comparer.check_columns()
     
     comparer.common_variants = get_common_variants(comparer.df1, comparer.df2)
