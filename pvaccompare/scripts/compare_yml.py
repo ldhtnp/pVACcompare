@@ -22,6 +22,11 @@ class CompareYML():
 
 
     def load_files(self):
+        """
+        Purpose:    Load the two input yml files into dictionaries
+        Modifies:   Nothing
+        Returns:    Two dictionaries corresponding to the two input files
+        """
         with open(self.input_file1, 'r') as f1, open(self.input_file2, 'r') as f2:
             data1 = yaml.safe_load(f1)
             data2 = yaml.safe_load(f2)
@@ -30,6 +35,11 @@ class CompareYML():
 
 
     def interpret_diff(self):
+        """
+        Purpose:    Write all of the input yml differences found to the generated report
+        Modifies:   Nothing
+        Returns:    None
+        """
         with open(self.output_path, 'w') as f:
             f.write(f"Report Generation Date and Time: {datetime.datetime.now()}\n")
             f.write("\n\n============================== INPUT YML COMPARISON ==============================\n\n\n")

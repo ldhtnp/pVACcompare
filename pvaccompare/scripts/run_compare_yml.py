@@ -3,6 +3,11 @@ from scripts.compare_yml import CompareYML
 
 
 def main(input_file1, input_file2, output_file):
+    """
+    Purpose:    Control function for the inputs.yml file comparison
+    Modifies:   Nothing
+    Returns:    None
+    """
     comparer = CompareYML(input_file1, input_file2, output_file)
 
     if not comparer.differences:

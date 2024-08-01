@@ -29,12 +29,22 @@ class CompareAggregatedTSV():
 
 
     def get_total_number_variants(self):
+        """
+        Purpose:    Get the total number of variants between the two files
+        Modifies:   Nothing
+        Returns:    Integer of the total number of variants
+        """
         total_variants = len(self.common_variants)+len(self.unique_variants_file1)+len(self.unique_variants_file2)
         return total_variants
 
 
 
     def get_number_column_differences(self):
+        """
+        Purpose:    Get the number of differences for each column
+        Modifies:   Nothing
+        Returns:    Dictionary of the columns and corresponding differences
+        """
         num_col_differences = {}
         for col, differences in self.differences.items():
             if (col != "ID"):
@@ -44,6 +54,11 @@ class CompareAggregatedTSV():
 
 
     def generate_differences_summary(self):
+        """
+        Purpose:    Create a summary of different statistics
+        Modifies:   Nothing
+        Returns:    String of the summary
+        """
         total_vars = self.get_total_number_variants()
         common_vars = len(self.common_variants)
         num_unique_vars_file1 = len(self.unique_variants_file1)
@@ -64,6 +79,11 @@ class CompareAggregatedTSV():
 
 
     def generate_comparison_report(self):
+        """
+        Purpose:    Write all of the aggregated tsv differences found to the generated report
+        Modifies:   Nothing
+        Returns:    None
+        """
         self.differences, self.unique_variants = get_file_differences(self.df1, self.df2, self.columns_to_compare, self.unique_variants_file1, self.unique_variants_file2, self.contains_id)
         
         if self.differences or self.unique_variants:
@@ -112,6 +132,11 @@ class CompareAggregatedTSV():
 
 
     def check_column_formatting(self):
+        """
+        Purpose:    Rename columns based on the mappings dictionary to make column names the same
+        Modifies:   df1 and df2
+        Returns:    None
+        """
         for col in self.df1.columns:
             for key, value in self.column_mappings.items():
                 if col == key:
@@ -130,6 +155,11 @@ class CompareAggregatedTSV():
 
 
     def check_columns(self):
+        """
+        Purpose:    Replace ID with Gene-AA_change if needed, output comparisons that have been dropped
+        Modifies:   self.contains_id, self.columns_dropped_message
+        Returns:    List of columns to keep in the comparison
+        """
         self.check_column_formatting()
         df1_dropped_cols, df2_dropped_cols = drop_useless_columns(self.df1, self.df2, self.columns_to_compare)
         columns_to_keep = check_columns_to_compare(self.df1, self.df2, self.columns_to_compare)
@@ -162,6 +192,11 @@ class CompareAggregatedTSV():
 
 
     def combine_gene_and_AA_change(self):
+        """
+        Purpose:    Combines Gene and AA_Change into a singular unique ID column in both dataframes
+        Modifies:   df1 and df2
+        Returns:    None
+        """
         self.df1['ID'] = self.df1[self.ID_replacement_cols[0]].astype(str) + ' (' + self.df1[self.ID_replacement_cols[1]].astype(str) + ')'
         self.df2['ID'] = self.df2[self.ID_replacement_cols[0]].astype(str) + ' (' + self.df2[self.ID_replacement_cols[1]].astype(str) + ')'
 

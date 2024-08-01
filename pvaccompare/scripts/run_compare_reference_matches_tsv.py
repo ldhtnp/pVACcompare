@@ -4,6 +4,11 @@ from scripts.compare_reference_matches_tsv import CompareReferenceMatchesTSV
 
 
 def main(input_file1, input_file2, output_file):
+    """
+    Purpose:    Control function for the reference matches tsv comparison
+    Modifies:   Nothing
+    Returns:    None
+    """
     comparer = CompareReferenceMatchesTSV(input_file1, input_file2, output_file)
 
     comparer.create_id_column()

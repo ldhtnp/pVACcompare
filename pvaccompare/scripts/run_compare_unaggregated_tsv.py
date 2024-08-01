@@ -4,6 +4,11 @@ from scripts.compare_unaggregated_tsv import CompareUnaggregatedTSV
 
 
 def main(input_file1, input_file2, output_file):
+    """
+    Purpose:    Control function for the unaggregated tsv file comparison
+    Modifies:   Nothing
+    Returns:    None
+    """
     comparer = CompareUnaggregatedTSV(input_file1, input_file2, output_file)
 
     comparer.create_id_column()

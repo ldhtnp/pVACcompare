@@ -3,6 +3,11 @@ from scripts.compare_json import CompareJSON
 
 
 def main(input_file1, input_file2, output_file):
+    """
+    Purpose:    Control function for the metrics json file comparison
+    Modifies:   Nothing
+    Returns:    None
+    """
     comparer = CompareJSON(input_file1, input_file2, output_file)
     comparer.compare_metric_data()
 

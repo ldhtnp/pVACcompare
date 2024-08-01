@@ -12,6 +12,11 @@ class CompareJSON():
 
     
     def load_files(self):
+        """
+        Purpose:    Load the two json metrics files into dictionaries
+        Modifies:   Nothing
+        Returns:    Two dictionaries corresponding to the two input files
+        """
         with open(self.input_file1) as f1, open(self.input_file2) as f2:
             json1 = json.load(f1)
             json2 = json.load(f2)
@@ -20,6 +25,11 @@ class CompareJSON():
 
     @staticmethod
     def filter_chr_keys(data):
+        """
+        Purpose:    Filter the data to remove everything except the inputs
+        Modifies:   Nothing
+        Returns:    Filtered data
+        """
         if isinstance(data, dict):
             return {k: CompareJSON.filter_chr_keys(v) for k, v in data.items() if not k.startswith('chr')}
         elif isinstance(data, list):
@@ -29,6 +39,11 @@ class CompareJSON():
     
 
     def compare_metric_data(self):
+        """
+        Purpose:    Get and store all of the input differences
+        Modifies:   self.input_differences
+        Returns:    None
+        """
         filtered_data1 = self.filter_chr_keys(self.json1)
         filtered_data2 = self.filter_chr_keys(self.json2)
 
@@ -41,6 +56,11 @@ class CompareJSON():
     
 
     def generate_input_comparison_report(self):
+        """
+        Purpose:    Write all of the json metric differences found to the generated report
+        Modifies:   Nothing
+        Returns:    None
+        """
         try:
             with open(self.output_path, 'a') as f:
                 f.write("\n============================== METRICS JSON COMPARISON ==============================\n\n\n")

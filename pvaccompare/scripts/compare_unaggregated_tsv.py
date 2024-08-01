@@ -18,6 +18,11 @@ class CompareUnaggregatedTSV():
 
 
     def create_id_column(self):
+        """
+        Purpose:    Combines multiple columns into a singular unique ID column in both dataframes
+        Modifies:   df1 and df2
+        Returns:    None
+        """
         id_columns = ['Chromosome', 'Start', 'Stop', 'Reference', 'Variant', 'HLA Allele', 'MT Epitope Seq', 'Index']
         self.df1['ID'] = self.df1[id_columns].apply(lambda x: '-'.join(map(str, x)), axis=1)
         self.df2['ID'] = self.df2[id_columns].apply(lambda x: '-'.join(map(str, x)), axis=1)
@@ -28,6 +33,11 @@ class CompareUnaggregatedTSV():
 
     @staticmethod
     def output_dropped_cols(cols1_to_drop, cols2_to_drop):
+        """
+        Purpose:    Outputs the dropped comparison columns to the terminal
+        Modifies:   Nothing
+        Returns:    None
+        """
         for col in cols1_to_drop:
             if col in cols2_to_drop:
                 print(f"UNAGGREGATED COMPARISON DROPPED: '{col}' is not present in either file")
@@ -40,6 +50,11 @@ class CompareUnaggregatedTSV():
     
 
     def generate_comparison_report(self):
+        """
+        Purpose:    Write all of the unaggregated tsv differences found to the generated report
+        Modifies:   Nothing
+        Returns:    None
+        """
         self.differences, self.unique_variants = get_file_differences(self.df1, self.df2, self.columns_to_compare, self.unique_variants_file1, self.unique_variants_file2)
         
         if self.differences or self.unique_variants:

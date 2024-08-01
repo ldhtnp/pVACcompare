@@ -19,6 +19,11 @@ class CompareReferenceMatchesTSV():
 
 
     def create_id_column(self):
+        """
+        Purpose:    Combines multiple columns into a singular unique ID column in both dataframes
+        Modifies:   df1 and df2
+        Returns:    None
+        """
         id_columns = ['Chromosome', 'Start', 'Stop', 'Reference', 'Variant', 'Transcript', 'MT Epitope Seq', 'Hit ID', 'Match Start', 'Match Stop']
         self.df1['ID'] = self.df1[id_columns].apply(lambda x: '-'.join(map(str, x)), axis=1)
         self.df2['ID'] = self.df2[id_columns].apply(lambda x: '-'.join(map(str, x)), axis=1)
@@ -36,17 +41,23 @@ class CompareReferenceMatchesTSV():
 
     @staticmethod
     def output_dropped_cols(cols1_to_drop, cols2_to_drop):
+        """
+        Purpose:    Outputs the dropped comparison columns to the terminal
+        Modifies:   Nothing
+        Returns:    None
+        """
         for col in cols1_to_drop:
             if col in cols2_to_drop:
-                print(f"REFERNCE MATCH COMPARISON DROPPED: '{col}' is not present in either file")
+                print(f"REFERENCE MATCH COMPARISON DROPPED: '{col}' is not present in either file")
             else:
-                print(f"REFERNCE MATCH COMPARISON DROPPED: '{col}' is only present in file 1")
+                print(f"REFERENCE MATCH COMPARISON DROPPED: '{col}' is only present in file 1")
         for col in cols2_to_drop:
             if col not in cols1_to_drop:
-                print(f"REFERNCE MATCH COMPARISON DROPPED: '{col}' is only present in file 2")
+                print(f"REFERENCE MATCH COMPARISON DROPPED: '{col}' is only present in file 2")
     
 
 
+    # TODO: Potentially remove and used shared function in run_utils
     def compare_rows(self):
         for variant in self.common_variants:
             df1_rows = self.df1[self.df1['ID'] == variant]
@@ -88,6 +99,7 @@ class CompareReferenceMatchesTSV():
 
     
 
+    # TODO: Potentially remove and used shared function in run_utils
     def get_file_differences(self):
         self.compare_rows()
 
@@ -122,6 +134,11 @@ class CompareReferenceMatchesTSV():
 
 
     def generate_comparison_report(self):
+        """
+        Purpose:    Write all of the reference match tsv differences found to the generated report
+        Modifies:   Nothing
+        Returns:    None
+        """
         self.get_file_differences()
         
         if self.differences:
@@ -135,7 +152,6 @@ class CompareReferenceMatchesTSV():
                     for col, diffs in self.differences.items():
                         if col == "ID":
                             f.write(f"\n\n============[ UNIQUE VARIANTS ]============\n\n\n")
-                            #id_columns = ['Chromosome', 'Start', 'Stop', 'Reference', 'Variant', 'Transcript', 'MT Epitope Seq', 'Hit ID', 'Match Start', 'Match Stop']
                             f.write("FORMAT: Chromosome - Start - Stop - Reference - Variant - Transcript - MT_Epitope_Seq - Hit_ID - Match_Start - Match_Stop : Number of Hits\n\n")
                             for diff in diffs:
                                 if (diff['File 2'] == ''):

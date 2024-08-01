@@ -4,6 +4,11 @@ from scripts.run_utils import *
 
 
 def main(input_file1, input_file2, output_file, columns_to_compare):
+    """
+    Purpose:    Control function for the aggregated tsv file comparison
+    Modifies:   Nothing
+    Returns:    None
+    """
     comparer = CompareAggregatedTSV(input_file1, input_file2, output_file, columns_to_compare)
     comparer.columns_to_compare = comparer.check_columns()
     

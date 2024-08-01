@@ -5,11 +5,21 @@ import re
 
 
 def get_common_variants(df1, df2):
+    """
+    Purpose:    Find and store IDs shared between the two given dataframes
+    Modifies:   Nothing
+    Returns:    A set containing IDs that are common between the two dataframes
+    """
     return set(df1['ID']).intersection(set(df2['ID']))
 
 
 
 def load_tsv_files(input_file1, input_file2):
+    """
+    Purpose:    Load the two input tsv files into dataframes
+    Modifies:   Nothing
+    Returns:    Two dataframes corresponding to the two input files
+    """
     try:
         df1 = pd.read_csv(input_file1, sep='\t', low_memory=False)
         df2 = pd.read_csv(input_file2, sep='\t', low_memory=False)
@@ -20,6 +30,11 @@ def load_tsv_files(input_file1, input_file2):
 
 
 def make_rows_equal(df1, df2):
+    """
+    Purpose:    Add 'dummy data' to make the two dataframes have an equal number of rows
+    Modifies:   One of the two dataframes depending on which is smaller
+    Returns:    Two dataframes
+    """
     num_rows_to_add = abs(df1.shape[0] - df2.shape[0])
     if df1.shape[0] > df2.shape[0]:
         dummy_data = pd.DataFrame(np.nan, index=range(num_rows_to_add), columns=df2.columns)
@@ -32,6 +47,12 @@ def make_rows_equal(df1, df2):
 
 
 def drop_useless_columns(df1, df2, columns_to_compare):
+    """
+    Purpose:    First removes columns that are not included in the comparison, excluding 'ID', then removes columns not present 
+                in both files
+    Modifies:   df1 and df2
+    Returns:    Two lists containing the columns dropped in the corresponding dataframes
+    """
     columns_to_keep = set(['ID'])
     if 'ID' not in df1.columns or 'ID' not in df2.columns:
         columns_to_keep.update(['Gene', 'AA Change'])
@@ -56,6 +77,11 @@ def drop_useless_columns(df1, df2, columns_to_compare):
 
 
 def check_columns_to_compare(df1, df2, columns_to_compare):
+    """
+    Purpose:    Add columns present in both dataframes to columns_to_keep
+    Modifies:   Nothing
+    Returns:    List of columns present in both dataframes
+    """
     columns_to_keep = []
     for col in columns_to_compare:
         if col in df1.columns and col in df2.columns:
@@ -65,6 +91,11 @@ def check_columns_to_compare(df1, df2, columns_to_compare):
 
 
 def get_unique_variants(df1, df2, common_variants):
+    """
+    Purpose:    Find and store unique variants to each dataframe
+    Modifies:   Nothing
+    Returns:    Two sets containing IDs unique to the corresponding dataframes
+    """
     unique_variants_file1 = set(df1['ID']).difference(common_variants)
     unique_variants_file2 = set(df2['ID']).difference(common_variants)
     return unique_variants_file1, unique_variants_file2
@@ -72,6 +103,11 @@ def get_unique_variants(df1, df2, common_variants):
 
 
 def extract_id_parts(id_str):
+    """
+    Purpose:    Extract parts of the ID to use in sorting
+    Modifies:   Nothing
+    Returns:    A tuple of the different sections for sorting
+    """
     match = re.match(r'chr(\w+)-(\d+)-(\d+)-', id_str)
     if match:
         chr_part = match.group(1)
@@ -85,6 +121,11 @@ def extract_id_parts(id_str):
 
 
 def split_replaced_id(id_str):
+    """
+    Purpose:    Extract parts of the replaced ID (Gene-AA change) to use in sorting
+    Modifies:   Nothing
+    Returns:    Two strings corresponding to the split sections
+    """
     try:
         grp1, rest = id_str.split(' (')
         grp2 = rest.split('-')[0].rstrip(')')
@@ -96,6 +137,11 @@ def split_replaced_id(id_str):
 
 
 def get_file_differences(df1, df2, columns_to_compare, unique_variants_file1, unique_variants_file2, contains_id=True, tolerance=0.1):
+    """
+    Purpose:    Find and store differences found between the two dataframes
+    Modifies:   Nothing
+    Returns:    Dictionary of differences and a dictionary of unique variants
+    """
     merged_df = pd.merge(df1, df2, on='ID', suffixes=('_file1', '_file2'))
     
     differences = {}

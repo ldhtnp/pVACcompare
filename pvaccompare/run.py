@@ -11,6 +11,11 @@ from scripts import run_compare_json
 # TODO: Add summary to unaggregated output and reference matches output?
 
 def define_parser():
+    """
+    Purpose:    Define arguments for the parser that the user can use
+    Modifies:   Nothing
+    Returns:    The parser
+    """
     valid_columns = ["Gene", "AA Change", "Num Passing Transcripts", "Best Peptide", "Best Transcript", "Num Passing Peptides", "IC50 MT", "IC50 WT", "%%ile MT", "%%ile WT", "RNA Expr", "RNA VAF", "DNA VAF", "Tier"]
     default_columns = ["Num Passing Transcripts", "Best Peptide", "Best Transcript", "Num Passing Peptides", "Tier"]
 
@@ -26,6 +31,11 @@ def define_parser():
 
 
 def validate_columns(columns_to_compare, parser):
+    """
+    Purpose:    Makes sure the user inputs valid columns
+    Modifies:   Nothing
+    Returns:    None
+    """
     valid_columns = ["Gene", "AA Change", "Num Passing Transcripts", "Best Peptide", "Best Transcript", "Num Passing Peptides", "IC50 MT", "IC50 WT", "%ile MT", "%ile WT", "RNA Expr", "RNA VAF", "DNA VAF", "Tier"]
     for col in columns_to_compare:
         if col not in valid_columns:
@@ -34,6 +44,11 @@ def validate_columns(columns_to_compare, parser):
 
 
 def find_file(results_folder, subfolder, pattern):
+    """
+    Purpose:    Attempts to locate the files needed for each comparison
+    Modifies:   Nothing
+    Returns:    A string of the file path
+    """
     search_path = os.path.join(results_folder, subfolder, pattern)
     files = glob.glob(search_path, recursive=True)
     return files[0] if files else None
@@ -41,6 +56,11 @@ def find_file(results_folder, subfolder, pattern):
 
 
 def run_comparison(prefix, results_folder1, results_folder2, output_file, columns_to_compare):
+    """
+    Purpose:    Runs all of the different comparisons
+    Modifies:   Nothing
+    Returns:    None
+    """
     output_file = output_file + '_' + prefix + '.tsv'
 
     yml1_path = find_file(results_folder1, prefix + '/log', 'inputs.yml')
