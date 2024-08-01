@@ -123,16 +123,12 @@ class CompareAggregatedTSV():
 
 
 
-    def check_columns(self):
+    def check_id(self, cols1_to_drop, cols2_to_drop):
         """
-        Purpose:    Replace ID with Gene-AA_change if needed, output comparisons that have been dropped
-        Modifies:   self.contains_id, self.columns_dropped_message
-        Returns:    List of columns to keep in the comparison
+        Purpose:    Replace ID with Gene-AA_change if needed
+        Modifies:   self.contains_id, self.replaced_id
+        Returns:    None
         """
-        cols1_to_drop, cols2_to_drop = drop_useless_columns(self.df1, self.df2, self.columns_to_compare)
-        columns_to_keep = check_columns_to_compare(self.df1, self.df2, self.columns_to_compare)
-        self.columns_dropped_message = output_dropped_cols(cols1_to_drop, cols2_to_drop)
-
         if 'ID' in cols1_to_drop or 'ID' in cols2_to_drop:
             self.contains_id = False
 
@@ -145,7 +141,6 @@ class CompareAggregatedTSV():
                 self.combine_gene_and_AA_change()
                 print(u'\u2022', "Replaced ID with Gene and AA Change")
                 self.replaced_id = True
-        return columns_to_keep
 
 
 
