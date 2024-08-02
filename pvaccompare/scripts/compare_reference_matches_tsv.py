@@ -30,6 +30,11 @@ class CompareReferenceMatchesTSV():
 
 
     def check_duplicate_ids(self):
+        """
+        Purpose:    Checks if duplicate IDs exist in either dataframe
+        Modifies:   Nothing
+        Returns:    Boolean value
+        """
         self.hits_file1 = self.df1['ID'].value_counts().to_dict()
         self.hits_file2 = self.df2['ID'].value_counts().to_dict()
 
@@ -50,6 +55,11 @@ class CompareReferenceMatchesTSV():
 
 
     def output_counts(self, differences_summary, id_format):
+        """
+        Purpose:    Write all of the unique variants and their number of hits to the generated report
+        Modifies:   Nothing
+        Returns:    None
+        """
         sorted_hits_file1 = dict(sorted(self.hits_file1.items(), key=lambda x: extract_id_parts(x[0])))
         sorted_hits_file2 = dict(sorted(self.hits_file2.items(), key=lambda x: extract_id_parts(x[0])))
 

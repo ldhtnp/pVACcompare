@@ -55,7 +55,7 @@ def define_parser():
 
 def validate_aggregated_columns(aggregated_columns, parser):
     """
-    Purpose:    Makes sure the user inputs valid columns
+    Purpose:    Makes sure the user inputs valid aggregated tsv columns
     Modifies:   Nothing
     Returns:    None
     """
@@ -68,7 +68,7 @@ def validate_aggregated_columns(aggregated_columns, parser):
 
 def validate_unaggregated_columns(unaggregated_columns, parser):
     """
-    Purpose:    Makes sure the user inputs valid columns
+    Purpose:    Makes sure the user inputs valid unaggregated tsv columns
     Modifies:   Nothing
     Returns:    None
     """
@@ -94,7 +94,7 @@ def validate_unaggregated_columns(unaggregated_columns, parser):
 
 def validate_reference_match_columns(reference_match_columns, parser):
     """
-    Purpose:    Makes sure the user inputs valid columns
+    Purpose:    Makes sure the user inputs valid reference match tsv columns
     Modifies:   Nothing
     Returns:    None
     """
