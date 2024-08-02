@@ -12,60 +12,6 @@ class CompareAggregatedTSV():
         self.replaced_id = False
         self.ID_replacement_cols = ['Gene', 'AA Change']
         self.columns_to_compare = columns_to_compare
-        self.common_variants = set()
-        self.unique_variants_file1 = set()
-        self.unique_variants_file2 = set()
-        self.differences = {}
-
-
-
-    def get_total_number_variants(self):
-        """
-        Purpose:    Get the total number of variants between the two files
-        Modifies:   Nothing
-        Returns:    Integer of the total number of variants
-        """
-        total_variants = len(self.common_variants)+len(self.unique_variants_file1)+len(self.unique_variants_file2)
-        return total_variants
-
-
-
-    def get_number_column_differences(self):
-        """
-        Purpose:    Get the number of differences for each column
-        Modifies:   Nothing
-        Returns:    Dictionary of the columns and corresponding differences
-        """
-        num_col_differences = {}
-        for col, differences in self.differences.items():
-            if (col != "ID"):
-                num_col_differences[col] = len(differences)
-        return num_col_differences
-
-
-
-    def generate_differences_summary(self):
-        """
-        Purpose:    Create a summary of different statistics
-        Modifies:   Nothing
-        Returns:    String of the summary
-        """
-        total_vars = self.get_total_number_variants()
-        common_vars = len(self.common_variants)
-        num_unique_vars_file1 = len(self.unique_variants_file1)
-        num_unique_vars_file2 = len(self.unique_variants_file2)
-        summary = f"\n/* Differences Summary */\n"
-        summary += f"-----------------------------\n"
-        summary += f"Total number of variants: {total_vars}\n"
-        summary += f"Number of common variants: {common_vars}\n"
-        summary += f"Number of variants unique to file 1: {num_unique_vars_file1}\n"
-        summary += f"Number of variants unique to file 2: {num_unique_vars_file2}\n"
-        num_col_differences = self.get_number_column_differences()
-        for col, _ in self.differences.items():
-            if col != "ID":
-                summary += f"-----\n"
-                summary += f"Number of differences in {col}: {num_col_differences[col]}\n"
-        return summary
 
 
 

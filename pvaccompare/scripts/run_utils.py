@@ -204,11 +204,20 @@ def get_file_differences(df1, df2, columns_to_compare, unique_variants_file1, un
     for col in columns_to_compare:
         col_file1 = f"{col}_file1"
         col_file2 = f"{col}_file2"
-        
+
+        # Convert columns to numeric
+        merged_df[col_file1] = pd.to_numeric(merged_df[col_file1], errors='coerce')
+        merged_df[col_file2] = pd.to_numeric(merged_df[col_file2], errors='coerce')
+
+        # Determine if columns are numeric
+        is_numeric_col1 = np.issubdtype(merged_df[col_file1].dtype, np.number)
+        is_numeric_col2 = np.issubdtype(merged_df[col_file2].dtype, np.number)
+
         mask = (merged_df[col_file1].notna() | merged_df[col_file2].notna()) & (merged_df[col_file1] != merged_df[col_file2])
-        if np.issubdtype(merged_df[col_file1].dtype, np.number) and np.issubdtype(merged_df[col_file2].dtype, np.number):
-            mask = mask | (np.abs(merged_df[col_file1] - merged_df[col_file2]) > tolerance)
-        
+        if is_numeric_col1 and is_numeric_col2:
+            tolerance_mask = np.abs(merged_df[col_file1] - merged_df[col_file2]) > tolerance
+            mask = mask & tolerance_mask
+
         diff = merged_df[mask][['ID', col_file1, col_file2]]
         if not diff.empty:
             differences[col] = diff.to_dict('records')
@@ -243,9 +252,59 @@ def get_file_differences(df1, df2, columns_to_compare, unique_variants_file1, un
 
 
 
-def generate_comparison_report(tool, differences, unique_variants, input_file1, input_file2, output_path, columns_dropped_message="", differences_summary="", replaced_id=False):
+def get_total_number_variants(common_variants, unique_variants_file1, unique_variants_file2):
         """
-        Purpose:    Write all of the aggregated tsv differences found to the generated report
+        Purpose:    Get the total number of variants between the two files
+        Modifies:   Nothing
+        Returns:    Integer of the total number of variants
+        """
+        total_variants = len(common_variants)+len(unique_variants_file1)+len(unique_variants_file2)
+        return total_variants
+
+
+
+def get_number_column_differences(differences):
+    """
+    Purpose:    Get the number of differences for each column
+    Modifies:   Nothing
+    Returns:    Dictionary of the columns and corresponding differences
+    """
+    num_col_differences = {}
+    for col, differences in differences.items():
+        if (col != "ID"):
+            num_col_differences[col] = len(differences)
+    return num_col_differences
+
+
+
+def generate_differences_summary(common_variants, unique_variants_file1, unique_variants_file2, differences={}):
+    """
+    Purpose:    Create a summary of different statistics
+    Modifies:   Nothing
+    Returns:    String of the summary
+    """
+    total_vars = get_total_number_variants(common_variants, unique_variants_file1, unique_variants_file2)
+    common_vars = len(common_variants)
+    num_unique_vars_file1 = len(unique_variants_file1)
+    num_unique_vars_file2 = len(unique_variants_file2)
+    summary = f"\n/* Differences Summary */\n"
+    summary += f"-----------------------------\n"
+    summary += f"Total number of variants: {total_vars}\n"
+    summary += f"Number of common variants: {common_vars}\n"
+    summary += f"Number of variants unique to file 1: {num_unique_vars_file1}\n"
+    summary += f"Number of variants unique to file 2: {num_unique_vars_file2}\n"
+    num_col_differences = get_number_column_differences(differences)
+    for col, _ in differences.items():
+        if col != "ID":
+            summary += f"-----\n"
+            summary += f"Number of differences in {col}: {num_col_differences[col]}\n"
+    return summary
+
+
+
+def generate_comparison_report(tool, id_format, differences, unique_variants, input_file1, input_file2, output_path, columns_dropped_message="", differences_summary="", replaced_id=False):
+        """
+        Purpose:    Handles writing the aggregated and unaggregated tsv differences to the generated report
         Modifies:   Nothing
         Returns:    None
         """
@@ -261,11 +320,13 @@ def generate_comparison_report(tool, differences, unique_variants, input_file1, 
                         f.write(f"\n{columns_dropped_message}")
                     if differences_summary != "":
                         f.write(differences_summary)
-                    if replaced_id:
-                        f.write("\n\nID Format: 'Gene (AA_Change)'")
                                 
                     for col, diffs in differences.items():
                         f.write(f"\n\n============[ DIFFERENCES IN {col.upper()} ]============\n\n\n")
+                        if replaced_id:
+                            f.write("ID Format: 'Gene (AA_Change)'\n\n")
+                        else:
+                            f.write(f"ID Format: {id_format}\n\n")
                         f.write("ID\tFile 1\tFile 2\n")
                         for diff in diffs:
                             file1_value = diff.get(f'{col}_file1', 'NOT FOUND')
@@ -274,6 +335,10 @@ def generate_comparison_report(tool, differences, unique_variants, input_file1, 
 
                     if unique_variants:
                         f.write(f"\n\n============[ UNIQUE VARIANTS ]============\n\n\n")
+                        if replaced_id:
+                            f.write("Variant Format: 'Gene (AA_Change)'\n\n")
+                        else:
+                            f.write(f"Variant Format: {id_format}\n\n")
                         for diff in unique_variants:
                             if diff['File 2'] == '':
                                 if first_unique_variant1:

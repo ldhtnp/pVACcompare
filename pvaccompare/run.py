@@ -8,10 +8,6 @@ from scripts import run_compare_yml
 from scripts import run_compare_json
 
 
-# TODO: Add summary to unaggregated output and reference matches output?
-# TODO: Reference match output wrong, need to add ID format write statement
-# TODO: Remove custom file check in reference match comparison, use run_utils
-# TODO: Modify check_columns in aggregated tsv comparison
 # TODO: Add parameters for specifying columns included
 
 def define_parser():

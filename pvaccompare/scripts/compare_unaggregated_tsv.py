@@ -10,10 +10,6 @@ class CompareUnaggregatedTSV():
         self.df1, self.df2 = load_tsv_files(self.input_file1, self.input_file2)
         self.columns_to_compare = ['Biotype', 'Sub-peptide Position', 'Median MT IC50 Score', 'Median WT IC50 Score', 'Median MT Percentile', 
         'Median WT Percentile', 'WT Epitope Seq', 'Tumor DNA VAF', 'Tumor RNA Depth', 'Tumor RNA VAF', 'Gene Expression']
-        self.common_variants = set()
-        self.unique_variants_file1 = set()
-        self.unique_variants_file2 = set()
-        self.differences = {}
 
 
 
