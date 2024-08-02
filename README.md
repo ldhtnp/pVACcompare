@@ -13,10 +13,10 @@ The following packages need to be installed to run pVACcompare:
 - deepdiff, yaml, pandas, numpy
 ---
 ## Usage
-pVACcompare offers several parameters that allow the user to have control of the comparisons.<br>
+pVACcompare offers several parameters that allow the user to have control of the comparisons.<br><br>
 Running the following in the terminal will display the help menu with all of the available parameters and options:<br>
-```python3 run.py -h```<br>
+```python3 run.py -h```<br><br>
 An example of running the tool likes like the following:<br>
-```python3 run.py --mhc_class 1 --aggregated_columns 'Best Peptide', 'Best Transcript' version1/result version2/result differences```<br>
-Note: All columns specified must be in quotes and comma separated<br>
+```python3 run.py --mhc_class 1 --aggregated_columns 'Best Peptide', 'Best Transcript' version1/result version2/result differences```<br><br>
+Note: All columns specified must be in quotes and comma separated<br><br>
 The above command will compare MHC Class I results only with the specified columns included in the aggregated tsv comparison. Columns for the unaggregated tsv comparison and reference match tsv comparison were not specified, so the default columns will be used. The report will be generated in a differences_MHC_Class_I.tsv file.
