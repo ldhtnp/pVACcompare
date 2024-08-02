@@ -3,7 +3,7 @@ from scripts.compare_reference_matches_tsv import CompareReferenceMatchesTSV
 
 
 
-def main(input_file1, input_file2, output_file):
+def main(input_file1, input_file2, output_file, columns_to_compare):
     """
     Purpose:    Control function for the reference matches tsv comparison
     Modifies:   Nothing
@@ -11,7 +11,7 @@ def main(input_file1, input_file2, output_file):
     """
     id_format = "Chromosome-Start-Stop-Reference-Variant-Transcript-MT_Epitope_Seq-Hit_ID-Match_Start-Match_Stop"
 
-    comparer = CompareReferenceMatchesTSV(input_file1, input_file2, output_file)
+    comparer = CompareReferenceMatchesTSV(input_file1, input_file2, output_file, columns_to_compare)
     check_column_formatting(comparer.df1, comparer.df2)
 
     comparer.create_id_column()

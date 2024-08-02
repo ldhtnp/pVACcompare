@@ -3,13 +3,12 @@ from scripts.run_utils import *
 
 
 class CompareUnaggregatedTSV():
-    def __init__(self, input_file1, input_file2, output_file):
+    def __init__(self, input_file1, input_file2, output_file, columns_to_compare):
         self.input_file1 = input_file1
         self.input_file2 = input_file2
         self.output_path = output_file
         self.df1, self.df2 = load_tsv_files(self.input_file1, self.input_file2)
-        self.columns_to_compare = ['Biotype', 'Sub-peptide Position', 'Median MT IC50 Score', 'Median WT IC50 Score', 'Median MT Percentile', 
-        'Median WT Percentile', 'WT Epitope Seq', 'Tumor DNA VAF', 'Tumor RNA Depth', 'Tumor RNA VAF', 'Gene Expression']
+        self.columns_to_compare = columns_to_compare
 
 
 

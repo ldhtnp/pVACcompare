@@ -3,7 +3,7 @@ from scripts.compare_unaggregated_tsv import CompareUnaggregatedTSV
 
 
 
-def main(input_file1, input_file2, output_file):
+def main(input_file1, input_file2, output_file, columns_to_compare):
     """
     Purpose:    Control function for the unaggregated tsv file comparison
     Modifies:   Nothing
@@ -11,7 +11,7 @@ def main(input_file1, input_file2, output_file):
     """
     id_format = "Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Mt_Epitope_Seq-Index"
 
-    comparer = CompareUnaggregatedTSV(input_file1, input_file2, output_file)
+    comparer = CompareUnaggregatedTSV(input_file1, input_file2, output_file, columns_to_compare)
     check_column_formatting(comparer.df1, comparer.df2)
 
     comparer.create_id_column()
