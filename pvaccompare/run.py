@@ -49,6 +49,11 @@ def define_parser():
                         help=f"Comma-separated columns to include in the unaggregated TSV comparison, choices: {', '.join(valid_unaggregated_columns)}")
     parser.add_argument('--reference_match_columns', type=lambda s:[a for a in s.split(',')], default=default_reference_match_columns,
                         help=f"Comma-separated columns to include in the reference match TSV comparison, choices: {', '.join(valid_reference_match_columns)}")
+
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('--immuno_release', action='store_true', help="Use this flag if you are comparing results from immuno releases.")
+    group.add_argument('--pvactools_release', action='store_true', help="Use this flag if you are comparing results from pvactools releases.")
+    
     return parser
 
 
@@ -123,7 +128,7 @@ def run_comparison(prefix, results_folder1, results_folder2, output_file, aggreg
     Modifies:   Nothing
     Returns:    None
     """
-    output_file = output_file + '_' + prefix + '.tsv'
+    output_file = output_file + '_' + prefix.replace('/', '_') + '.tsv'
 
     yml1_path = find_file(results_folder1, prefix + '/log', 'inputs.yml')
     yml2_path = find_file(results_folder2, prefix + '/log', 'inputs.yml')
@@ -133,11 +138,11 @@ def run_comparison(prefix, results_folder1, results_folder2, output_file, aggreg
         print(u'\u2713 Comparison completed successfully.')
     else:
         if yml1_path:
-            print(f"ERROR: Could not locate the input YML file in results folder 2 for {prefix.replace('_', ' ')}.")
+            print(f"ERROR: Could not locate the input YML file in results folder 2 for {prefix}.")
         elif yml2_path:
-            print(f"ERROR: Could not locate the input YML file in results folder 1 for {prefix.replace('_', ' ')}.")
+            print(f"ERROR: Could not locate the input YML file in results folder 1 for {prefix}.")
         else:
-            print(f"ERROR: Could not locate the input YML file in either results folder for {prefix.replace('_', ' ')}.")
+            print(f"ERROR: Could not locate the input YML file in either results folder for {prefix}.")
         print(u'\u2716 Comparison skipped.')
     
     json1_path = find_file(results_folder1, prefix + '/', '*all_epitopes.aggregated.metrics.json')
@@ -148,11 +153,11 @@ def run_comparison(prefix, results_folder1, results_folder2, output_file, aggreg
         print(u'\u2713 Comparison completed successfully.')
     else:
         if json1_path:
-            print(f"\nERROR: Could not locate the metrics JSON file in results folder 2 for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the metrics JSON file in results folder 2 for {prefix}.")
         elif json2_path:
-            print(f"\nERROR: Could not locate the metrics JSON file in results folder 1 for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the metrics JSON file in results folder 1 for {prefix}.")
         else:
-            print(f"\nERROR: Could not locate the metrics JSON file in either results folder for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the metrics JSON file in either results folder for {prefix}.")
         print(u'\u2716 Comparison skipped.')
 
     agg_tsv1_path = find_file(results_folder1, prefix + '/', '*all_epitopes.aggregated.tsv')
@@ -163,11 +168,11 @@ def run_comparison(prefix, results_folder1, results_folder2, output_file, aggreg
         print(u'\u2713 Comparison completed successfully.')
     else:
         if agg_tsv1_path:
-            print(f"\nERROR: Could not locate the aggregated TSV file in results folder 2 for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the aggregated TSV file in results folder 2 for {prefix}.")
         elif agg_tsv2_path:
-            print(f"\nERROR: Could not locate the aggregated TSV file in results folder 1 for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the aggregated TSV file in results folder 1 for {prefix}.")
         else:
-            print(f"\nERROR: Could not locate the aggregated TSV file in either results folder for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the aggregated TSV file in either results folder for {prefix}.")
         print(u'\u2716 Comparison skipped.')
     
     unagg_tsv1_path = find_file(results_folder1, prefix + '/', '*all_epitopes.tsv')
@@ -178,11 +183,11 @@ def run_comparison(prefix, results_folder1, results_folder2, output_file, aggreg
         print(u'\u2713 Comparison completed successfully.')
     else:
         if unagg_tsv1_path:
-            print(f"\nERROR: Could not locate the unaggregated TSV file in results folder 2 for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the unaggregated TSV file in results folder 2 for {prefix}.")
         elif unagg_tsv2_path:
-            print(f"\nERROR: Could not locate the unaggregated TSV file in results folder 1 for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the unaggregated TSV file in results folder 1 for {prefix}.")
         else:
-            print(f"\nERROR: Could not locate the unaggregated TSV file in either results folder for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the unaggregated TSV file in either results folder for {prefix}.")
         print(u'\u2716 Comparison skipped.')
     
     refmatch_tsv1_path = find_file(results_folder1, prefix + '/', '*.reference_matches')
@@ -193,14 +198,14 @@ def run_comparison(prefix, results_folder1, results_folder2, output_file, aggreg
         print(u'\u2713 Comparison completed successfully.')
     else:
         if refmatch_tsv1_path:
-            print(f"\nERROR: Could not locate the reference match TSV file in results folder 2 for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the reference match TSV file in results folder 2 for {prefix}.")
         elif refmatch_tsv2_path:
-            print(f"\nERROR: Could not locate the reference match TSV file in results folder 1 for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the reference match TSV file in results folder 1 for {prefix}.")
         else:
-            print(f"\nERROR: Could not locate the reference match TSV file in either results folder for {prefix.replace('_', ' ')}.")
+            print(f"\nERROR: Could not locate the reference match TSV file in either results folder for {prefix}.")
         print(u'\u2716 Comparison skipped.')
     print('\n' + u'\u2500'*55)
-    print(f"Successfully generated {prefix.replace('_', ' ')} comparison report.")
+    print(f"Successfully generated {prefix} comparison report.")
     print(u'\u2500'*55)
 
 
@@ -221,10 +226,16 @@ def main():
     classes_to_run = [args.mhc_class] if args.mhc_class else ['1', '2']
 
     for class_type in classes_to_run:
-        if class_type == '1':
-            prefix = "MHC_Class_I"
-        elif class_type == '2':
-            prefix = "MHC_Class_II"
+        if args.pvactools_release:
+            if class_type == '1':
+                prefix = "MHC_Class_I"
+            elif class_type == '2':
+                prefix = "MHC_Class_II"
+        else:
+            if class_type == '1':
+                prefix = "pVACseq/mhc_i"
+            elif class_type == '2':
+                prefix = "pVACseq/mhc_ii"
         run_comparison(prefix, args.results_folder1, args.results_folder2, args.output_file, args.aggregated_columns, args.unaggregated_columns, args.reference_match_columns)
 
 
