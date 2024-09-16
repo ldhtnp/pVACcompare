@@ -1,6 +1,7 @@
 import argparse
 import glob
 import os
+import datetime
 from scripts import run_compare_aggregated_tsv
 from scripts import run_compare_unaggregated_tsv
 from scripts import run_compare_reference_matches_tsv
@@ -122,6 +123,17 @@ def find_file(results_folder, subfolder, pattern):
 
 
 
+def write_header(output_file):
+    """
+    Purpose:    Writes the report generation date and time to the top of the output file
+    Modifies:   Nothing
+    Returns:    None
+    """
+    with open(output_file, 'w') as f:
+        f.write(f"Report Generation Date and Time: {datetime.datetime.now()}\n\n")
+
+
+
 def run_comparison(prefix, results_folder1, results_folder2, output_file, aggregated_columns, unaggregated_columns, reference_match_columns):
     """
     Purpose:    Runs all of the different comparisons
@@ -129,20 +141,26 @@ def run_comparison(prefix, results_folder1, results_folder2, output_file, aggreg
     Returns:    None
     """
     output_file = output_file + '_' + prefix.replace('/', '_') + '.tsv'
+    write_header(output_file)
 
-    yml1_path = find_file(results_folder1, prefix + '/log', 'inputs.yml')
-    yml2_path = find_file(results_folder2, prefix + '/log', 'inputs.yml')
-    if yml1_path and yml2_path:
-        print("Running the input YML comparison tool...")
-        run_compare_yml.main(yml1_path, yml2_path, output_file)
-        print(u'\u2713 Comparison completed successfully.')
-    else:
-        if yml1_path:
-            print(f"ERROR: Could not locate the input YML file in results folder 2 for {prefix}.")
-        elif yml2_path:
-            print(f"ERROR: Could not locate the input YML file in results folder 1 for {prefix}.")
+
+    if "pVACseq" not in prefix:
+        yml1_path = find_file(results_folder1, prefix + '/log', 'inputs.yml')
+        yml2_path = find_file(results_folder2, prefix + '/log', 'inputs.yml')
+        if yml1_path and yml2_path:
+            print("Running the input YML comparison tool...")
+            run_compare_yml.main(yml1_path, yml2_path, output_file)
+            print(u'\u2713 Comparison completed successfully.')
         else:
-            print(f"ERROR: Could not locate the input YML file in either results folder for {prefix}.")
+            if yml1_path:
+                print(f"ERROR: Could not locate the input YML file in results folder 2 for {prefix}.")
+            elif yml2_path:
+                print(f"ERROR: Could not locate the input YML file in results folder 1 for {prefix}.")
+            else:
+                print(f"ERROR: Could not locate the input YML file in either results folder for {prefix}.")
+            print(u'\u2716 Comparison skipped.')
+    else:
+        print("Input YML files are not included in immuno pipeline results")
         print(u'\u2716 Comparison skipped.')
     
     json1_path = find_file(results_folder1, prefix + '/', '*all_epitopes.aggregated.metrics.json')
