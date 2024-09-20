@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import re
+import logging
 
 
 def check_column_formatting(df1, df2):
@@ -23,7 +24,7 @@ def check_column_formatting(df1, df2):
             if col == key:
                 break
             elif col in value:
-                print("\u2022", f"Renamed '{col}' to '{key}' in file 1")
+                logging.info("\u2022 Renamed '%s' to '%s' in file 1", col, key)
                 df1.rename(columns={col: key}, inplace=True)
                 break
     for col in df2.columns:
@@ -31,7 +32,7 @@ def check_column_formatting(df1, df2):
             if col == key:
                 break
             elif col in value:
-                print("\u2022", f"Renamed '{col}' to '{key}' in file 2")
+                logging.info("\u2022 Renamed '%s' to '%s' in file 2", col, key)
                 df2.rename(columns={col: key}, inplace=True)
                 break
 
@@ -45,20 +46,20 @@ def output_dropped_cols(cols1_to_drop, cols2_to_drop):
     columns_dropped_message = ""
     for col in cols1_to_drop:
         if col in cols2_to_drop:
-            print(
-                "\u2022", f"Comparison dropped: '{col}' is not present in either file"
+            logging.info(
+                "\u2022 Comparison dropped: '%s' is not present in either file", col
             )
             columns_dropped_message += (
                 f"Comparison dropped: '{col}' is not present in either file\n"
             )
         else:
-            print("\u2022", f"Comparison dropped: '{col}' is only present in file 1")
+            logging.info("\u2022 Comparison dropped: '%s' is only present in file 1", col)
             columns_dropped_message += (
                 f"Comparison dropped: '{col}' is only present in file 1\n"
             )
     for col in cols2_to_drop:
         if col not in cols1_to_drop:
-            print("\u2022", f"Comparison dropped: '{col}' is only present in file 2")
+            logging.info("\u2022 Comparison dropped: '%s' is only present in file 2", col)
             columns_dropped_message += (
                 f"Comparison dropped: '{col}' is only present in file 2\n"
             )
@@ -197,7 +198,7 @@ def split_replaced_id(id_str):
         grp2 = rest.split("-")[0].rstrip(")")
         return grp1, grp2
     except Exception as e:
-        print(f"Error splitting replaced ID: {id_str}, {e}")
+        logging.error(f"Error splitting replaced ID: {id_str}, {e}")
         return "", ""
 
 
@@ -401,4 +402,4 @@ def generate_comparison_report(
         except Exception as e:
             raise Exception(f"Error writing differences to file: {e}")
     else:
-        print(f"The {tool} files are identical.")
+        logging.info("The %s files are identical.", tool)

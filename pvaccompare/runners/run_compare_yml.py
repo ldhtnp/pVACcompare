@@ -1,3 +1,4 @@
+import logging
 from comparisons import CompareYML
 
 
@@ -7,15 +8,16 @@ def main(input_file1, input_file2, output_file):
     Modifies:   Nothing
     Returns:    None
     """
+    logging.basicConfig(level=logging.INFO)
     comparer = CompareYML(input_file1, input_file2, output_file)
 
     if not comparer.differences:
-        print("The YAML input files are identical.")
+        logging.info("The YAML input files are identical.")
     else:
         try:
             comparer.interpret_diff()
         except Exception as e:
-            print(f"Error occurred while generating input comparison report: {e}")
+            logging.error(f"Error occurred while generating input comparison report: {e}")
 
 
 if __name__ == "__main__":

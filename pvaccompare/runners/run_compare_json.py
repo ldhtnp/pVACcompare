@@ -1,3 +1,4 @@
+import logging
 from comparisons import CompareJSON
 
 
@@ -16,7 +17,7 @@ def main(input_file1, input_file2, output_file):
     ):
         comparer.generate_input_comparison_report()
     else:
-        print("The JSON metric inputs are identical.")
+        logging.info("The JSON metric inputs are identical.")
 
 
 if __name__ == "__main__":

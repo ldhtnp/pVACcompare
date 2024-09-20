@@ -1,6 +1,7 @@
 import glob
 import os
 import datetime
+import logging
 from runners import *
 
 
@@ -46,26 +47,21 @@ def run_comparison(
         yml1_path = find_file(results_folder1, prefix + "/log", "inputs.yml")
         yml2_path = find_file(results_folder2, prefix + "/log", "inputs.yml")
         if yml1_path and yml2_path:
-            print("Running the input YML comparison tool...")
+            logging.info("Running the input YML comparison tool...")
             run_compare_yml(yml1_path, yml2_path, output_file)
-            print("\u2713 Comparison completed successfully.")
+            logging.info("\u2713 Comparison completed successfully.")
         else:
             if yml1_path:
-                print(
-                    f"ERROR: Could not locate the input YML file in results folder 2 for {prefix}."
-                )
+                logging.error("ERROR: Could not locate the input YML file in results folder 2 for %s.", prefix)
             elif yml2_path:
-                print(
-                    f"ERROR: Could not locate the input YML file in results folder 1 for {prefix}."
-                )
+                logging.error("ERROR: Could not locate the input YML file in results folder 1 for %s.", prefix)
             else:
-                print(
-                    f"ERROR: Could not locate the input YML file in either results folder for {prefix}."
-                )
-            print("\u2716 Comparison skipped.")
+                logging.error("ERROR: Could not locate the input YML file in either results folder for %s.", prefix)
+
+            logging.info("\u2716 Comparison skipped.")
     else:
-        print("Input YML files are not included in immuno pipeline results")
-        print("\u2716 Comparison skipped.")
+        logging.info("Input YML files are not included in immuno pipeline results")
+        logging.info("\u2716 Comparison skipped.")
 
     json1_path = find_file(
         results_folder1, prefix + "/", "*all_epitopes.aggregated.metrics.json"
@@ -74,23 +70,17 @@ def run_comparison(
         results_folder2, prefix + "/", "*all_epitopes.aggregated.metrics.json"
     )
     if json1_path and json2_path:
-        print("\nRunning the metrics JSON comparison tool...")
+        logging.info("\nRunning the metrics JSON comparison tool...")
         run_compare_json(json1_path, json2_path, output_file)
-        print("\u2713 Comparison completed successfully.")
+        logging.info("\u2713 Comparison completed successfully.")
     else:
         if json1_path:
-            print(
-                f"\nERROR: Could not locate the metrics JSON file in results folder 2 for {prefix}."
-            )
+            logging.error("ERROR: Could not locate the metrics JSON file in results folder 2 for %s.", prefix)
         elif json2_path:
-            print(
-                f"\nERROR: Could not locate the metrics JSON file in results folder 1 for {prefix}."
-            )
+            logging.error("ERROR: Could not locate the metrics JSON file in results folder 1 for %s.", prefix)
         else:
-            print(
-                f"\nERROR: Could not locate the metrics JSON file in either results folder for {prefix}."
-            )
-        print("\u2716 Comparison skipped.")
+            logging.error("ERROR: Could not locate the metrics JSON file in either results folder for %s.", prefix)
+        logging.info("\u2716 Comparison skipped.")
 
     agg_tsv1_path = find_file(
         results_folder1, prefix + "/", "*all_epitopes.aggregated.tsv"
@@ -99,71 +89,53 @@ def run_comparison(
         results_folder2, prefix + "/", "*all_epitopes.aggregated.tsv"
     )
     if agg_tsv1_path and agg_tsv2_path:
-        print("\nRunning the aggregated TSV comparison tool...")
+        logging.info("\nRunning the aggregated TSV comparison tool...")
         run_compare_aggregated_tsv(
             agg_tsv1_path, agg_tsv2_path, output_file, aggregated_columns
         )
-        print("\u2713 Comparison completed successfully.")
+        logging.info("\u2713 Comparison completed successfully.")
     else:
         if agg_tsv1_path:
-            print(
-                f"\nERROR: Could not locate the aggregated TSV file in results folder 2 for {prefix}."
-            )
+            logging.error("ERROR: Could not locate the aggregated TSV file in results folder 2 for %s.", prefix)
         elif agg_tsv2_path:
-            print(
-                f"\nERROR: Could not locate the aggregated TSV file in results folder 1 for {prefix}."
-            )
+            logging.error("ERROR: Could not locate the aggregated TSV file in results folder 1 for %s.", prefix)
         else:
-            print(
-                f"\nERROR: Could not locate the aggregated TSV file in either results folder for {prefix}."
-            )
-        print("\u2716 Comparison skipped.")
+            logging.error("ERROR: Could not locate the aggregated TSV file in either results folder for %s.", prefix)
+        logging.info("\u2716 Comparison skipped.")
 
     unagg_tsv1_path = find_file(results_folder1, prefix + "/", "*all_epitopes.tsv")
     unagg_tsv2_path = find_file(results_folder2, prefix + "/", "*all_epitopes.tsv")
     if unagg_tsv1_path and unagg_tsv2_path:
-        print("\nRunning the unaggregated TSV comparison tool...")
+        logging.info("\nRunning the unaggregated TSV comparison tool...")
         run_compare_unaggregated_tsv(
             unagg_tsv1_path, unagg_tsv2_path, output_file, unaggregated_columns
         )
-        print("\u2713 Comparison completed successfully.")
+        logging.info("\u2713 Comparison completed successfully.")
     else:
         if unagg_tsv1_path:
-            print(
-                f"\nERROR: Could not locate the unaggregated TSV file in results folder 2 for {prefix}."
-            )
+            logging.error("ERROR: Could not locate the unaggregated TSV file in results folder 2 for %s.", prefix)
         elif unagg_tsv2_path:
-            print(
-                f"\nERROR: Could not locate the unaggregated TSV file in results folder 1 for {prefix}."
-            )
+            logging.error("ERROR: Could not locate the unaggregated TSV file in results folder 1 for %s.", prefix)
         else:
-            print(
-                f"\nERROR: Could not locate the unaggregated TSV file in either results folder for {prefix}."
-            )
-        print("\u2716 Comparison skipped.")
+            logging.error("ERROR: Could not locate the unaggregated TSV file in either results folder for %s.", prefix)
+        logging.info("\u2716 Comparison skipped.")
 
     refmatch_tsv1_path = find_file(results_folder1, prefix + "/", "*.reference_matches")
     refmatch_tsv2_path = find_file(results_folder2, prefix + "/", "*.reference_matches")
     if refmatch_tsv1_path and refmatch_tsv2_path:
-        print("\nRunning the reference match TSV comparison tool...")
+        logging.info("\nRunning the reference match TSV comparison tool...")
         run_compare_reference_matches_tsv(
             refmatch_tsv1_path, refmatch_tsv2_path, output_file, reference_match_columns
         )
-        print("\u2713 Comparison completed successfully.")
+        logging.info("\u2713 Comparison completed successfully.")
     else:
         if refmatch_tsv1_path:
-            print(
-                f"\nERROR: Could not locate the reference match TSV file in results folder 2 for {prefix}."
-            )
+            logging.error("ERROR: Could not locate the reference match TSV file in results folder 2 for %s.", prefix)
         elif refmatch_tsv2_path:
-            print(
-                f"\nERROR: Could not locate the reference match TSV file in results folder 1 for {prefix}."
-            )
+            logging.error("ERROR: Could not locate the reference match TSV file in results folder 1 for %s.", prefix)
         else:
-            print(
-                f"\nERROR: Could not locate the reference match TSV file in either results folder for {prefix}."
-            )
-        print("\u2716 Comparison skipped.")
-    print("\n" + "\u2500" * 55)
-    print(f"Successfully generated {prefix} comparison report.")
-    print("\u2500" * 55)
+            logging.error("ERROR: Could not locate the reference match TSV file in either results folder for %s.", prefix)
+        logging.info("\u2716 Comparison skipped.")
+    logging.info("\n" + "\u2500" * 55)
+    logging.info("Successfully generated %s comparison report.", prefix)
+    logging.info("\u2500" * 55)
