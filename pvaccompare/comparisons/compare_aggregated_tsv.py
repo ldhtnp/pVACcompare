@@ -1,8 +1,7 @@
-from scripts.run_utils import *
+from run_utils import *
 
 
-
-class CompareAggregatedTSV():
+class CompareAggregatedTSV:
     def __init__(self, input_file1, input_file2, output_file, columns_to_compare):
         self.input_file1 = input_file1
         self.input_file2 = input_file2
@@ -10,10 +9,8 @@ class CompareAggregatedTSV():
         self.df1, self.df2 = load_tsv_files(self.input_file1, self.input_file2)
         self.contains_id = True
         self.replaced_id = False
-        self.ID_replacement_cols = ['Gene', 'AA Change']
+        self.ID_replacement_cols = ["Gene", "AA Change"]
         self.columns_to_compare = columns_to_compare
-
-
 
     def check_id(self, cols1_to_drop, cols2_to_drop):
         """
@@ -21,7 +18,7 @@ class CompareAggregatedTSV():
         Modifies:   self.contains_id, self.replaced_id
         Returns:    None
         """
-        if 'ID' in cols1_to_drop or 'ID' in cols2_to_drop:
+        if "ID" in cols1_to_drop or "ID" in cols2_to_drop:
             self.contains_id = False
 
         if not self.contains_id:
@@ -31,10 +28,8 @@ class CompareAggregatedTSV():
                     can_replace = False
             if can_replace:
                 self.combine_gene_and_AA_change()
-                print(u'\u2022', "Replaced ID with Gene and AA Change")
+                print("\u2022", "Replaced ID with Gene and AA Change")
                 self.replaced_id = True
-
-
 
     def combine_gene_and_AA_change(self):
         """
@@ -42,8 +37,18 @@ class CompareAggregatedTSV():
         Modifies:   df1 and df2
         Returns:    None
         """
-        self.df1['ID'] = self.df1[self.ID_replacement_cols[0]].astype(str) + ' (' + self.df1[self.ID_replacement_cols[1]].astype(str) + ')'
-        self.df2['ID'] = self.df2[self.ID_replacement_cols[0]].astype(str) + ' (' + self.df2[self.ID_replacement_cols[1]].astype(str) + ')'
+        self.df1["ID"] = (
+            self.df1[self.ID_replacement_cols[0]].astype(str)
+            + " ("
+            + self.df1[self.ID_replacement_cols[1]].astype(str)
+            + ")"
+        )
+        self.df2["ID"] = (
+            self.df2[self.ID_replacement_cols[0]].astype(str)
+            + " ("
+            + self.df2[self.ID_replacement_cols[1]].astype(str)
+            + ")"
+        )
 
         self.df1.drop(columns=self.ID_replacement_cols, inplace=True)
         self.df2.drop(columns=self.ID_replacement_cols, inplace=True)
