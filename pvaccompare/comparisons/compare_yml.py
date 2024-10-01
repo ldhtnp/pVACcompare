@@ -15,6 +15,7 @@ class CompareYML:
             "dictionary_item_removed": "Fields Unique to File 1",
             "values_changed": "Values Changed",
             "iterable_item_added": "Values Added in File 2",
+            "iterable_item_removed": "Values Removed in File 2",
         }
 
     def load_files(self):

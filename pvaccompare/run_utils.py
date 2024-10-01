@@ -53,13 +53,17 @@ def output_dropped_cols(cols1_to_drop, cols2_to_drop):
                 f"Comparison dropped: '{col}' is not present in either file\n"
             )
         else:
-            logging.info("\u2022 Comparison dropped: '%s' is only present in file 1", col)
+            logging.info(
+                "\u2022 Comparison dropped: '%s' is only present in file 1", col
+            )
             columns_dropped_message += (
                 f"Comparison dropped: '{col}' is only present in file 1\n"
             )
     for col in cols2_to_drop:
         if col not in cols1_to_drop:
-            logging.info("\u2022 Comparison dropped: '%s' is only present in file 2", col)
+            logging.info(
+                "\u2022 Comparison dropped: '%s' is only present in file 2", col
+            )
             columns_dropped_message += (
                 f"Comparison dropped: '{col}' is only present in file 2\n"
             )

@@ -2,10 +2,11 @@ from compare_tools import *
 import argparse
 import logging
 
-logging.basicConfig(level=logging.DEBUG, format='%(message)s')
+logging.basicConfig(level=logging.DEBUG, format="%(message)s")
 
 # TODO: Speed up identical file comparison
 # TODO: Implement tests
+
 
 def define_parser():
     """

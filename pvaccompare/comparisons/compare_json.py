@@ -48,16 +48,22 @@ class CompareJSON:
         filtered_data2 = self.filter_chr_keys(self.json2)
 
         self.input_differences = {
-            "Shared Fields": {k for k in filtered_data1.keys() if k in filtered_data2},
+            "Shared Fields": sorted(
+                k for k in filtered_data1.keys() if k in filtered_data2
+            ),
             "Fields Unique to File 1": {
-                k: v for k, v in filtered_data1.items() if k not in filtered_data2
+                k: v
+                for k, v in sorted(filtered_data1.items())
+                if k not in filtered_data2
             },
             "Fields Unique to File 2": {
-                k: v for k, v in filtered_data2.items() if k not in filtered_data1
+                k: v
+                for k, v in sorted(filtered_data2.items())
+                if k not in filtered_data1
             },
             "Values Changed": {
                 k: f"{filtered_data1[k]} -> {filtered_data2[k]}"
-                for k in filtered_data1
+                for k in sorted(filtered_data1)
                 if k in filtered_data2 and filtered_data1[k] != filtered_data2[k]
             },
         }
@@ -81,7 +87,7 @@ class CompareJSON:
                 for type, changes in self.input_differences.items():
                     if changes:
                         f.write(f"\n=== {type} ===\n")
-                        if isinstance(changes, set):
+                        if isinstance(changes, set) or isinstance(changes, list):
                             for key in changes:
                                 f.write(f"\t{key}\n")
                         else:

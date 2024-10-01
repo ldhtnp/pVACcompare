@@ -52,11 +52,20 @@ def run_comparison(
             logging.info("\u2713 Comparison completed successfully.")
         else:
             if yml1_path:
-                logging.error("ERROR: Could not locate the input YML file in results folder 2 for %s.", prefix)
+                logging.error(
+                    "ERROR: Could not locate the input YML file in results folder 2 for %s.",
+                    prefix,
+                )
             elif yml2_path:
-                logging.error("ERROR: Could not locate the input YML file in results folder 1 for %s.", prefix)
+                logging.error(
+                    "ERROR: Could not locate the input YML file in results folder 1 for %s.",
+                    prefix,
+                )
             else:
-                logging.error("ERROR: Could not locate the input YML file in either results folder for %s.", prefix)
+                logging.error(
+                    "ERROR: Could not locate the input YML file in either results folder for %s.",
+                    prefix,
+                )
 
             logging.info("\u2716 Comparison skipped.")
     else:
@@ -75,11 +84,20 @@ def run_comparison(
         logging.info("\u2713 Comparison completed successfully.")
     else:
         if json1_path:
-            logging.error("ERROR: Could not locate the metrics JSON file in results folder 2 for %s.", prefix)
+            logging.error(
+                "ERROR: Could not locate the metrics JSON file in results folder 2 for %s.",
+                prefix,
+            )
         elif json2_path:
-            logging.error("ERROR: Could not locate the metrics JSON file in results folder 1 for %s.", prefix)
+            logging.error(
+                "ERROR: Could not locate the metrics JSON file in results folder 1 for %s.",
+                prefix,
+            )
         else:
-            logging.error("ERROR: Could not locate the metrics JSON file in either results folder for %s.", prefix)
+            logging.error(
+                "ERROR: Could not locate the metrics JSON file in either results folder for %s.",
+                prefix,
+            )
         logging.info("\u2716 Comparison skipped.")
 
     agg_tsv1_path = find_file(
@@ -96,11 +114,20 @@ def run_comparison(
         logging.info("\u2713 Comparison completed successfully.")
     else:
         if agg_tsv1_path:
-            logging.error("ERROR: Could not locate the aggregated TSV file in results folder 2 for %s.", prefix)
+            logging.error(
+                "ERROR: Could not locate the aggregated TSV file in results folder 2 for %s.",
+                prefix,
+            )
         elif agg_tsv2_path:
-            logging.error("ERROR: Could not locate the aggregated TSV file in results folder 1 for %s.", prefix)
+            logging.error(
+                "ERROR: Could not locate the aggregated TSV file in results folder 1 for %s.",
+                prefix,
+            )
         else:
-            logging.error("ERROR: Could not locate the aggregated TSV file in either results folder for %s.", prefix)
+            logging.error(
+                "ERROR: Could not locate the aggregated TSV file in either results folder for %s.",
+                prefix,
+            )
         logging.info("\u2716 Comparison skipped.")
 
     unagg_tsv1_path = find_file(results_folder1, prefix + "/", "*all_epitopes.tsv")
@@ -113,11 +140,20 @@ def run_comparison(
         logging.info("\u2713 Comparison completed successfully.")
     else:
         if unagg_tsv1_path:
-            logging.error("ERROR: Could not locate the unaggregated TSV file in results folder 2 for %s.", prefix)
+            logging.error(
+                "ERROR: Could not locate the unaggregated TSV file in results folder 2 for %s.",
+                prefix,
+            )
         elif unagg_tsv2_path:
-            logging.error("ERROR: Could not locate the unaggregated TSV file in results folder 1 for %s.", prefix)
+            logging.error(
+                "ERROR: Could not locate the unaggregated TSV file in results folder 1 for %s.",
+                prefix,
+            )
         else:
-            logging.error("ERROR: Could not locate the unaggregated TSV file in either results folder for %s.", prefix)
+            logging.error(
+                "ERROR: Could not locate the unaggregated TSV file in either results folder for %s.",
+                prefix,
+            )
         logging.info("\u2716 Comparison skipped.")
 
     refmatch_tsv1_path = find_file(results_folder1, prefix + "/", "*.reference_matches")
@@ -130,11 +166,20 @@ def run_comparison(
         logging.info("\u2713 Comparison completed successfully.")
     else:
         if refmatch_tsv1_path:
-            logging.error("ERROR: Could not locate the reference match TSV file in results folder 2 for %s.", prefix)
+            logging.error(
+                "ERROR: Could not locate the reference match TSV file in results folder 2 for %s.",
+                prefix,
+            )
         elif refmatch_tsv2_path:
-            logging.error("ERROR: Could not locate the reference match TSV file in results folder 1 for %s.", prefix)
+            logging.error(
+                "ERROR: Could not locate the reference match TSV file in results folder 1 for %s.",
+                prefix,
+            )
         else:
-            logging.error("ERROR: Could not locate the reference match TSV file in either results folder for %s.", prefix)
+            logging.error(
+                "ERROR: Could not locate the reference match TSV file in either results folder for %s.",
+                prefix,
+            )
         logging.info("\u2716 Comparison skipped.")
     logging.info("\n" + "\u2500" * 55)
     logging.info("Successfully generated %s comparison report.", prefix)

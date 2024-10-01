@@ -17,7 +17,9 @@ def main(input_file1, input_file2, output_file):
         try:
             comparer.interpret_diff()
         except Exception as e:
-            logging.error(f"Error occurred while generating input comparison report: {e}")
+            logging.error(
+                f"Error occurred while generating input comparison report: {e}"
+            )
 
 
 if __name__ == "__main__":
