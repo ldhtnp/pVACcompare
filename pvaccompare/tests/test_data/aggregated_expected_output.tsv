@@ -1,0 +1,78 @@
+
+
+============================== AGGREGATED TSV COMPARISON ==============================
+
+
+
+/* Differences Summary */
+-----------------------------
+Total number of variants: 19
+Number of common variants: 17
+Number of variants unique to file 1: 1
+Number of variants unique to file 2: 1
+-----
+Number of differences in Num Passing Transcripts: 1
+-----
+Number of differences in Best Peptide: 1
+-----
+Number of differences in Best Transcript: 1
+-----
+Number of differences in Num Passing Peptides: 1
+-----
+Number of differences in Tier: 1
+
+
+============[ DIFFERENCES IN NUM PASSING TRANSCRIPTS ]============
+
+
+ID Format: Chromosome-Start-Stop-Reference-Variant
+
+ID	File 1	File 2
+chr17-5007046-5007047-C-T:	1	->	3
+
+
+============[ DIFFERENCES IN BEST PEPTIDE ]============
+
+
+ID Format: Chromosome-Start-Stop-Reference-Variant
+
+ID	File 1	File 2
+chr2-47806319-47806320-G-A:	VENYSQNVA	->	VENZSQNVA
+
+
+============[ DIFFERENCES IN BEST TRANSCRIPT ]============
+
+
+ID Format: Chromosome-Start-Stop-Reference-Variant
+
+ID	File 1	File 2
+chr14-60724007-60724008-C-G:	ENST00000216513.5	->	ENST00000226513.5
+
+
+============[ DIFFERENCES IN NUM PASSING PEPTIDES ]============
+
+
+ID Format: Chromosome-Start-Stop-Reference-Variant
+
+ID	File 1	File 2
+chr17-5007046-5007047-C-T:	2	->	4
+
+
+============[ DIFFERENCES IN TIER ]============
+
+
+ID Format: Chromosome-Start-Stop-Reference-Variant
+
+ID	File 1	File 2
+chr11-62752450-62752451-G-A:	Pass	->	NoExpr
+
+
+============[ UNIQUE VARIANTS ]============
+
+
+Variant Format: Chromosome-Start-Stop-Reference-Variant
+
+Variants Unique to File 2:
+	chr4-373601-373602-C-T
+Variants Unique to File 1:
+	chr18-36067341-36067342-C-G

@@ -49,7 +49,7 @@ def main(input_file1, input_file2, output_file, columns_to_compare):
             common_variants, unique_variants_file1, unique_variants_file2, differences
         )
         generate_comparison_report(
-            "Reference Match TSV",
+            "Reference Matches TSV",
             id_format,
             differences,
             unique_variants,

@@ -227,22 +227,25 @@ def get_file_differences(
         col_file1 = f"{col}_file1"
         col_file2 = f"{col}_file2"
 
-        # Convert columns to numeric
-        merged_df[col_file1] = pd.to_numeric(merged_df[col_file1], errors="coerce")
-        merged_df[col_file2] = pd.to_numeric(merged_df[col_file2], errors="coerce")
-
         # Determine if columns are numeric
         is_numeric_col1 = np.issubdtype(merged_df[col_file1].dtype, np.number)
         is_numeric_col2 = np.issubdtype(merged_df[col_file2].dtype, np.number)
 
-        mask = (merged_df[col_file1].notna() | merged_df[col_file2].notna()) & (
-            merged_df[col_file1] != merged_df[col_file2]
-        )
         if is_numeric_col1 and is_numeric_col2:
+            # Convert to numeric values to ensure uniformity and handle missing/invalid values
+            merged_df[col_file1] = pd.to_numeric(merged_df[col_file1], errors="coerce")
+            merged_df[col_file2] = pd.to_numeric(merged_df[col_file2], errors="coerce")
+
             tolerance_mask = (
                 np.abs(merged_df[col_file1] - merged_df[col_file2]) > tolerance
             )
-            mask = mask & tolerance_mask
+            mask = tolerance_mask & ~(
+                merged_df[col_file1].isna() & merged_df[col_file2].isna()
+            )
+        else:
+            mask = (merged_df[col_file1] != merged_df[col_file2]) & ~(
+                merged_df[col_file1].isna() & merged_df[col_file2].isna()
+            )
 
         diff = merged_df[mask][["ID", col_file1, col_file2]]
         if not diff.empty:

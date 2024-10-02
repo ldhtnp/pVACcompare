@@ -1,0 +1,34 @@
+
+
+============================== REFERENCE MATCHES TSV COMPARISON ==============================
+
+
+
+
+============[ DIFFERENCES IN PEPTIDE ]============
+
+
+ID Format: Chromosome-Start-Stop-Reference-Variant-Transcript-MT_Epitope_Seq-Hit_ID-Match_Start-Match_Stop
+
+ID	File 1	File 2
+chr8-22566400-22566401-G-C-ENST00000240123.12-APSLSPHKM-ENSP00000356113.3-233-241:	APYLGSACSLSPHKM	->	APYLGSAPSLSPHKM
+
+
+============[ DIFFERENCES IN MATCH WINDOW ]============
+
+
+ID Format: Chromosome-Start-Stop-Reference-Variant-Transcript-MT_Epitope_Seq-Hit_ID-Match_Start-Match_Stop
+
+ID	File 1	File 2
+chr4-373601-373602-C-T-ENST00000240499.8-KIYTGEKPY-ENSP00000350113.2-498-507:	IYTVEKPYK	->	IYTGEKPYK
+
+
+============[ UNIQUE VARIANTS ]============
+
+
+Variant Format: Chromosome-Start-Stop-Reference-Variant-Transcript-MT_Epitope_Seq-Hit_ID-Match_Start-Match_Stop
+
+Variants Unique to File 2:
+	chr4-373601-373602-C-T-ENST00000240499.8-KIYTGEKPY-ENSP00000428878.1-632-643
+Variants Unique to File 1:
+	chr12-889169-889170-C-G-ENST00000530271.6-AELRRTLSP-ENSP00000376808.2-627-635
