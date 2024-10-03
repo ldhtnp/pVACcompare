@@ -16,7 +16,7 @@ def find_file(results_folder, subfolder, pattern):
     return files[0] if files else None
 
 
-def write_header(output_file):
+def write_header(output_file, aggregated_columns, unaggregated_columns, reference_match_columns):
     """
     Purpose:    Writes the report generation date and time to the top of the output file
     Modifies:   Nothing
@@ -24,6 +24,9 @@ def write_header(output_file):
     """
     with open(output_file, "w") as f:
         f.write(f"Report Generation Date and Time: {datetime.datetime.now()}\n\n")
+        f.write(f"Aggregated Columns: {aggregated_columns}\n")
+        f.write(f"Unaggregated Columns: {unaggregated_columns}\n")
+        f.write(f"Reference Match Columns: {reference_match_columns}\n\n")
 
 
 def run_comparison(
@@ -41,7 +44,7 @@ def run_comparison(
     Returns:    None
     """
     output_file = output_file + "_" + prefix.replace("/", "_") + ".tsv"
-    write_header(output_file)
+    write_header(output_file, aggregated_columns, unaggregated_columns, reference_match_columns)
 
     if "pVACseq" not in prefix:
         yml1_path = find_file(results_folder1, prefix + "/log", "inputs.yml")
