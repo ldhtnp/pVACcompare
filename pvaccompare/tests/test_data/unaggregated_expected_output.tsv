@@ -1,5 +1,4 @@
 
-
 ============================== UNAGGREGATED TSV COMPARISON ==============================
 
 
@@ -7,13 +6,11 @@
 /* Differences Summary */
 -----------------------------
 Total number of variants: 19
-Number of common variants: 18
-Number of variants unique to file 1: 0
+Number of common variants: 17
+Number of variants unique to file 1: 1
 Number of variants unique to file 2: 1
 -----
-Number of differences in Biotype: 1
------
-Number of differences in Sub-peptide Position: 1
+Number of differences in Biotype: 2
 -----
 Number of differences in Median MT IC50 Score: 1
 -----
@@ -21,9 +18,7 @@ Number of differences in Median WT IC50 Score: 1
 -----
 Number of differences in Median MT Percentile: 1
 -----
-Number of differences in Median WT Percentile: 1
------
-Number of differences in WT Epitope Seq: 2
+Number of differences in Median WT Percentile: 2
 -----
 Number of differences in Tumor DNA VAF: 1
 -----
@@ -35,98 +30,84 @@ Number of differences in Tumor RNA VAF: 1
 ============[ DIFFERENCES IN BIOTYPE ]============
 
 
-ID Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Mt_Epitope_Seq-Index
+ID Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Sub_peptide_Position-Mt_Epitope_Seq-Index
 
 ID	File 1	File 2
-chr1-16972417-16972418-C-G-HLA-A*29:02-SSAPFCPP-2.CROCC.ENST00000375541.10.missense.2009S/C:	other	->	protein_coding
-
-
-============[ DIFFERENCES IN SUB-PEPTIDE POSITION ]============
-
-
-ID Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Mt_Epitope_Seq-Index
-
-ID	File 1	File 2
-chr1-16006133-16006134-G-T-HLA-A*29:02-TRVTPMGW-1.SRARP.ENST00000329454.2.missense.100G/W:	2.0	->	1
+chr1-16006133-16006134-G-T-HLA-A*29:02-3-VTPMGWGC-1.SRARP.ENST00000329454.2.missense.100G/W:	other	->	protein_coding
+chr1-16972417-16972418-C-G-HLA-A*29:02-7-FCPPSGPP-2.CROCC.ENST00000375541.10.missense.2009S/C:	nan	->	protein_coding
 
 
 ============[ DIFFERENCES IN MEDIAN MT IC50 SCORE ]============
 
 
-ID Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Mt_Epitope_Seq-Index
+ID Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Sub_peptide_Position-Mt_Epitope_Seq-Index
 
 ID	File 1	File 2
-chr1-16006133-16006134-G-T-HLA-A*29:02-TRVTPMGW-1.SRARP.ENST00000329454.2.missense.100G/W:	33867.084	->	35867.084
+chr1-16006133-16006134-G-T-HLA-A*29:02-5-PMGWGCLA-1.SRARP.ENST00000329454.2.missense.100G/W:	22506.358	->	23506.358
 
 
 ============[ DIFFERENCES IN MEDIAN WT IC50 SCORE ]============
 
 
-ID Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Mt_Epitope_Seq-Index
+ID Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Sub_peptide_Position-Mt_Epitope_Seq-Index
 
 ID	File 1	File 2
-chr1-16006133-16006134-G-T-HLA-A*29:02-TRVTPMGW-1.SRARP.ENST00000329454.2.missense.100G/W:	40651.324	->	40551.324
+chr1-16006133-16006134-G-T-HLA-A*29:02-5-PMGWGCLA-1.SRARP.ENST00000329454.2.missense.100G/W:	25654.543	->	25954.543
 
 
 ============[ DIFFERENCES IN MEDIAN MT PERCENTILE ]============
 
 
-ID Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Mt_Epitope_Seq-Index
+ID Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Sub_peptide_Position-Mt_Epitope_Seq-Index
 
 ID	File 1	File 2
-chr1-16006133-16006134-G-T-HLA-A*29:02-TRVTPMGW-1.SRARP.ENST00000329454.2.missense.100G/W:	46.5	->	47.5
+chr1-16006133-16006134-G-T-HLA-A*29:02-4-TPMGWGCL-1.SRARP.ENST00000329454.2.missense.100G/W:	48.531	->	49.531
 
 
 ============[ DIFFERENCES IN MEDIAN WT PERCENTILE ]============
 
 
-ID Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Mt_Epitope_Seq-Index
+ID Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Sub_peptide_Position-Mt_Epitope_Seq-Index
 
 ID	File 1	File 2
-chr1-16006133-16006134-G-T-HLA-A*29:02-TRVTPMGW-1.SRARP.ENST00000329454.2.missense.100G/W:	86.755	->	89.755
-
-
-============[ DIFFERENCES IN WT EPITOPE SEQ ]============
-
-
-ID Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Mt_Epitope_Seq-Index
-
-ID	File 1	File 2
-chr1-16006133-16006134-G-T-HLA-A*29:02-VTPMGWGC-1.SRARP.ENST00000329454.2.missense.100G/W:	nan	->	VTPMGGGC
-chr1-16006133-16006134-G-T-HLA-A*29:02-PMGWGCLA-1.SRARP.ENST00000329454.2.missense.100G/W:	PMGSGCLA	->	PMGGGCLA
+chr1-16006133-16006134-G-T-HLA-A*29:02-4-TPMGWGCL-1.SRARP.ENST00000329454.2.missense.100G/W:	46.5	->	47.5
+chr1-16006133-16006134-G-T-HLA-A*29:02-5-PMGWGCLA-1.SRARP.ENST00000329454.2.missense.100G/W:	nan	->	51.882
 
 
 ============[ DIFFERENCES IN TUMOR DNA VAF ]============
 
 
-ID Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Mt_Epitope_Seq-Index
+ID Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Sub_peptide_Position-Mt_Epitope_Seq-Index
 
 ID	File 1	File 2
-chr1-16972417-16972418-C-G-HLA-A*29:02-APFCPPSG-2.CROCC.ENST00000375541.10.missense.2009S/C:	1.988	->	0.988
+chr1-16972417-16972418-C-G-HLA-A*29:02-4-SAPFCPPS-2.CROCC.ENST00000375541.10.missense.2009S/C:	1.988	->	0.988
 
 
 ============[ DIFFERENCES IN TUMOR RNA DEPTH ]============
 
 
-ID Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Mt_Epitope_Seq-Index
+ID Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Sub_peptide_Position-Mt_Epitope_Seq-Index
 
 ID	File 1	File 2
-chr1-16972417-16972418-C-G-HLA-A*29:02-PFCPPSGP-2.CROCC.ENST00000375541.10.missense.2009S/C:	53.0	->	56
+chr1-16972417-16972418-C-G-HLA-A*29:02-6-PFCPPSGP-2.CROCC.ENST00000375541.10.missense.2009S/C:	53	->	56
 
 
 ============[ DIFFERENCES IN TUMOR RNA VAF ]============
 
 
-ID Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Mt_Epitope_Seq-Index
+ID Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Sub_peptide_Position-Mt_Epitope_Seq-Index
 
 ID	File 1	File 2
-chr1-16972417-16972418-C-G-HLA-A*29:02-SAPFCPPS-2.CROCC.ENST00000375541.10.missense.2009S/C:	3.0	->	1.0
+chr1-16972417-16972418-C-G-HLA-A*29:02-8-CPPSGPPE-2.CROCC.ENST00000375541.10.missense.2009S/C:	2.0	->	1.0
 
 
 ============[ UNIQUE VARIANTS ]============
 
 
-Variant Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Mt_Epitope_Seq-Index
+Variant Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Sub_peptide_Position-Mt_Epitope_Seq-Index
+
+Variants Unique to File 1:
+	chr1-16972417-16972418-C-G-HLA-A*29:02-1-RRSSAPFC-2.CROCC.ENST00000375541.10.missense.2009S/C
 
 Variants Unique to File 2:
-	chr1-22576425-22576426-C-A-HLA-A*29:02-TCKETFKL-3.EPHA8.ENST00000166244.8.missense.123N/K
+	chr1-22576425-22576426-C-A-HLA-A*29:02-2-TCKETFKL-3.EPHA8.ENST00000166244.8.missense.123N/K

@@ -236,12 +236,20 @@ def get_file_differences(
             merged_df[col_file1] = pd.to_numeric(merged_df[col_file1], errors="coerce")
             merged_df[col_file2] = pd.to_numeric(merged_df[col_file2], errors="coerce")
 
+            # Mask for numeric differences greater than tolerance
             tolerance_mask = (
                 np.abs(merged_df[col_file1] - merged_df[col_file2]) > tolerance
             )
-            mask = tolerance_mask & ~(
-                merged_df[col_file1].isna() & merged_df[col_file2].isna()
+
+            # Mask for rows where one value is NaN and the other is not
+            nan_mask = (
+                merged_df[col_file1].isna() & ~merged_df[col_file2].isna()
+            ) | (
+                ~merged_df[col_file1].isna() & merged_df[col_file2].isna()
             )
+
+            # Final mask includes rows with significant numeric differences or NaN-regular number comparisons
+            mask = tolerance_mask | nan_mask
         else:
             mask = (merged_df[col_file1] != merged_df[col_file2]) & ~(
                 merged_df[col_file1].isna() & merged_df[col_file2].isna()
