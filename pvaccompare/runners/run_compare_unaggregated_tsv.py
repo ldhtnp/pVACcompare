@@ -9,7 +9,7 @@ def main(input_file1, input_file2, output_file, columns_to_compare):
     Returns:    None
     """
     id_format = (
-        "Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Mt_Epitope_Seq-Index"
+        "Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Sub_peptide_Position-Mt_Epitope_Seq-Index"
     )
 
     comparer = CompareUnaggregatedTSV(
