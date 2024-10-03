@@ -32,7 +32,6 @@ def define_parser():
     ]
     valid_unaggregated_columns = [
         "Biotype",
-        "Sub-peptide Position",
         "Median MT IC50 Score",
         "Median WT IC50 Score",
         "Median MT Percentile",
@@ -108,7 +107,6 @@ def define_parser():
     ]
     default_unaggregated_columns = [
         "Biotype",
-        "Sub-peptide Position",
         "Median MT IC50 Score",
         "Median WT IC50 Score",
         "Median MT Percentile",

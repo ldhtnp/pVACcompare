@@ -22,6 +22,7 @@ class CompareUnaggregatedTSV:
             "Reference",
             "Variant",
             "HLA Allele",
+            "Sub-peptide Position",
             "MT Epitope Seq",
             "Index",
         ]

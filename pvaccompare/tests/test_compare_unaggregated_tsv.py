@@ -13,7 +13,6 @@ class TestRunCompareUnaggregatedTSV(unittest.TestCase):
         self.output_file = tempfile.NamedTemporaryFile(delete=False, suffix=".tsv")
         self.columns_to_compare = [
             "Biotype",
-            "Sub-peptide Position",
             "Median MT IC50 Score",
             "Median WT IC50 Score",
             "Median MT Percentile",
