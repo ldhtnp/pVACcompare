@@ -22,5 +22,5 @@ Number of differences in Biotype: 1
 
 ID Format: Chromosome-Start-Stop-Reference-Variant-HLA_Allele-Sub_peptide_Position-Mt_Epitope_Seq-Index
 
-ID	File 1	File 2
-chr1-16006133-16006134-G-T-HLA-A*29:02-3-VTPMGWGC-1.SRARP.ENST00000329454.2.missense.100G/W:	other	->	protein_coding
+ID	File 1	File 2	(Line in File1, Line in File2)
+chr1-16006133-16006134-G-T-HLA-A*29:02-3-VTPMGWGC-1.SRARP.ENST00000329454.2.missense.100G/W:	other	->	protein_coding	(4, 4)

@@ -5,7 +5,6 @@ import logging
 logging.basicConfig(level=logging.DEBUG, format="%(message)s")
 
 # TODO: Speed up identical file comparison
-# TODO: Add line numbers to output differences
 
 
 def define_parser():

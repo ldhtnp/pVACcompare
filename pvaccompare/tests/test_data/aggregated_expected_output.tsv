@@ -17,9 +17,9 @@ Number of differences in Best Peptide: 1
 -----
 Number of differences in Best Transcript: 1
 -----
-Number of differences in Num Passing Peptides: 1
+Number of differences in Num Passing Peptides: 2
 -----
-Number of differences in Tier: 1
+Number of differences in Tier: 2
 
 
 ============[ DIFFERENCES IN NUM PASSING TRANSCRIPTS ]============
@@ -27,8 +27,8 @@ Number of differences in Tier: 1
 
 ID Format: Chromosome-Start-Stop-Reference-Variant
 
-ID	File 1	File 2
-chr17-5007046-5007047-C-T:	1	->	3
+ID	File 1	File 2	(Line in File1, Line in File2)
+chr17-5007046-5007047-C-T:	1	->	3	(3, 3)
 
 
 ============[ DIFFERENCES IN BEST PEPTIDE ]============
@@ -36,8 +36,8 @@ chr17-5007046-5007047-C-T:	1	->	3
 
 ID Format: Chromosome-Start-Stop-Reference-Variant
 
-ID	File 1	File 2
-chr2-47806319-47806320-G-A:	VENYSQNVA	->	VENZSQNVA
+ID	File 1	File 2	(Line in File1, Line in File2)
+chr2-47806319-47806320-G-A:	VENYSQNVA	->	VENZSQNVA	(6, 6)
 
 
 ============[ DIFFERENCES IN BEST TRANSCRIPT ]============
@@ -45,8 +45,8 @@ chr2-47806319-47806320-G-A:	VENYSQNVA	->	VENZSQNVA
 
 ID Format: Chromosome-Start-Stop-Reference-Variant
 
-ID	File 1	File 2
-chr14-60724007-60724008-C-G:	ENST00000216513.5	->	ENST00000226513.5
+ID	File 1	File 2	(Line in File1, Line in File2)
+chr14-60724007-60724008-C-G:	ENST00000216513.5	->	ENST00000226513.5	(10, 9)
 
 
 ============[ DIFFERENCES IN NUM PASSING PEPTIDES ]============
@@ -54,8 +54,9 @@ chr14-60724007-60724008-C-G:	ENST00000216513.5	->	ENST00000226513.5
 
 ID Format: Chromosome-Start-Stop-Reference-Variant
 
-ID	File 1	File 2
-chr17-5007046-5007047-C-T:	2	->	4
+ID	File 1	File 2	(Line in File1, Line in File2)
+chr1-154590262-154590263-T-A:	4	->	6	(2, 2)
+chr17-5007046-5007047-C-T:	2	->	4	(3, 3)
 
 
 ============[ DIFFERENCES IN TIER ]============
@@ -63,8 +64,9 @@ chr17-5007046-5007047-C-T:	2	->	4
 
 ID Format: Chromosome-Start-Stop-Reference-Variant
 
-ID	File 1	File 2
-chr11-62752450-62752451-G-A:	Pass	->	NoExpr
+ID	File 1	File 2	(Line in File1, Line in File2)
+chr10-37957500-37957501-C-T:	Fail	->	Pass	(19, 18)
+chr11-62752450-62752451-G-A:	Pass	->	NoExpr	(18, 17)
 
 
 ============[ UNIQUE VARIANTS ]============

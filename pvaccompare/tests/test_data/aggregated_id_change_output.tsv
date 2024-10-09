@@ -11,6 +11,10 @@ Number of variants unique to file 1: 0
 Number of variants unique to file 2: 0
 -----
 Number of differences in Best Peptide: 1
+-----
+Number of differences in Num Passing Peptides: 1
+-----
+Number of differences in Tier: 1
 
 
 ============[ DIFFERENCES IN BEST PEPTIDE ]============
@@ -18,5 +22,23 @@ Number of differences in Best Peptide: 1
 
 ID Format: 'Gene (AA_Change)'
 
-ID	File 1	File 2
-SIX4 (E23Q):	QENGMQSA	->	QENCMQSA
+ID	File 1	File 2	(Line in File1, Line in File2)
+SIX4 (E23Q):	QENGMQSA	->	QENCMQSA	(10, 10)
+
+
+============[ DIFFERENCES IN NUM PASSING PEPTIDES ]============
+
+
+ID Format: 'Gene (AA_Change)'
+
+ID	File 1	File 2	(Line in File1, Line in File2)
+ADAR (E806V):	4	->	6	(2, 2)
+
+
+============[ DIFFERENCES IN TIER ]============
+
+
+ID Format: 'Gene (AA_Change)'
+
+ID	File 1	File 2	(Line in File1, Line in File2)
+ZNF25 (E21K):	Fail	->	Pass	(19, 19)

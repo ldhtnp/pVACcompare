@@ -4,6 +4,11 @@ import re
 import logging
 
 
+def add_line_numbers(df1, df2):
+    df1['line'] = range(2, len(df1) + 2)
+    df2['line'] = range(2, len(df2) + 2)
+
+
 def check_column_formatting(df1, df2):
     """
     Purpose:    Rename columns based on the mappings dictionary to make column names the same
@@ -158,8 +163,8 @@ def get_file_differences(
     Modifies:   Nothing
     Returns:    Dictionary of differences and a dictionary of unique variants
     """
-    df1_selected = df1[["ID"] + columns_to_compare]
-    df2_selected = df2[["ID"] + columns_to_compare]
+    df1_selected = df1[["ID", "line"] + columns_to_compare]
+    df2_selected = df2[["ID", "line"] + columns_to_compare]
 
     merged_df = pd.merge(
         df1_selected, df2_selected, on="ID", suffixes=("_file1", "_file2")
@@ -196,7 +201,7 @@ def get_file_differences(
                 merged_df[col_file1].isna() & merged_df[col_file2].isna()
             )
 
-        diff = merged_df[mask][["ID", col_file1, col_file2]]
+        diff = merged_df[mask][["ID", col_file1, col_file2, "line_file1", "line_file2"]]
         if not diff.empty:
             differences[col] = diff.to_dict("records")
 
@@ -330,11 +335,13 @@ def generate_comparison_report(
                         f.write("ID Format: 'Gene (AA_Change)'\n\n")
                     else:
                         f.write(f"ID Format: {id_format}\n\n")
-                    f.write("ID\tFile 1\tFile 2\n")
+                    f.write("ID\tFile 1\tFile 2\t(Line in File1, Line in File2)\n")
                     for diff in diffs:
                         file1_value = diff.get(f"{col}_file1", "NOT FOUND")
+                        file1_line = diff.get("line_file1", "NOT FOUND")
                         file2_value = diff.get(f"{col}_file2", "NOT FOUND")
-                        f.write(f"{diff['ID']}:\t{file1_value}\t->\t{file2_value}\n")
+                        file2_line = diff.get("line_file2", "NOT FOUND")
+                        f.write(f"{diff['ID']}:\t{file1_value}\t->\t{file2_value}\t({file1_line}, {file2_line})\n")
 
                 if unique_variants:
                     f.write(f"\n\n============[ UNIQUE VARIANTS ]============\n\n\n")

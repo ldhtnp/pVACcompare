@@ -13,6 +13,7 @@ def main(input_file1, input_file2, output_file, columns_to_compare):
     comparer = CompareAggregatedTSV(
         input_file1, input_file2, output_file, columns_to_compare
     )
+    add_line_numbers(comparer.df1, comparer.df2)
     check_column_formatting(comparer.df1, comparer.df2)
     comparer.check_id()
 
