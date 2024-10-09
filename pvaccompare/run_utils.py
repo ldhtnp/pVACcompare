@@ -37,35 +37,30 @@ def check_column_formatting(df1, df2):
                 break
 
 
-def output_dropped_cols(cols1_to_drop, cols2_to_drop):
+def output_dropped_cols(df1, df2, original_columns):
     """
     Purpose:    Outputs the dropped comparison columns to the terminal and creates a columns dropped message for the generated report
     Modifies:   Nothing
     Returns:    String columns_dropped_message
     """
     columns_dropped_message = ""
-    for col in cols1_to_drop:
-        if col in cols2_to_drop:
+    for col in original_columns:
+        if col not in df1.columns and col not in df2.columns:
             logging.info(
-                "\u2022 Comparison dropped: '%s' is not present in either file", col
+                "\u2022 Column dropped: '%s' is not present in either file", col
             )
             columns_dropped_message += (
-                f"Comparison dropped: '{col}' is not present in either file\n"
+                f"Column dropped: '{col}' is not present in either file\n"
             )
-        else:
-            logging.info(
-                "\u2022 Comparison dropped: '%s' is only present in file 1", col
-            )
+        elif col not in df1.columns:
+            logging.info("\u2022 Column dropped: '%s' is only present in file 2", col)
             columns_dropped_message += (
-                f"Comparison dropped: '{col}' is only present in file 1\n"
+                f"Column dropped: '{col}' is only present in file 2\n"
             )
-    for col in cols2_to_drop:
-        if col not in cols1_to_drop:
-            logging.info(
-                "\u2022 Comparison dropped: '%s' is only present in file 2", col
-            )
+        elif col not in df2.columns:
+            logging.info("\u2022 Column dropped: '%s' is only present in file 1", col)
             columns_dropped_message += (
-                f"Comparison dropped: '{col}' is only present in file 2\n"
+                f"Column dropped: '{col}' is only present in file 1\n"
             )
     return columns_dropped_message
 
@@ -91,63 +86,6 @@ def load_tsv_files(input_file1, input_file2):
     except Exception as e:
         raise Exception(f"Error loading files: {e}")
     return df1, df2
-
-
-def make_rows_equal(df1, df2):
-    """
-    Purpose:    Add 'dummy data' to make the two dataframes have an equal number of rows
-    Modifies:   One of the two dataframes depending on which is smaller
-    Returns:    Two dataframes
-    """
-    num_rows_to_add = abs(df1.shape[0] - df2.shape[0])
-    if df1.shape[0] > df2.shape[0]:
-        dummy_data = pd.DataFrame(
-            np.nan, index=range(num_rows_to_add), columns=df2.columns
-        )
-        df2 = pd.concat([df2, dummy_data], ignore_index=True)
-    else:
-        dummy_data = pd.DataFrame(
-            np.nan, index=range(num_rows_to_add), columns=df1.columns
-        )
-        df1 = pd.concat([df1, dummy_data], ignore_index=True)
-    return df1, df2
-
-
-def drop_useless_columns(df1, df2, columns_to_compare):
-    """
-    Purpose:    First removes columns that are not included in the comparison, excluding 'ID', then removes columns not present
-                in both files
-    Modifies:   df1 and df2
-    Returns:    Two lists containing the columns dropped in the corresponding dataframes
-    """
-    columns_to_keep = set(["ID"])
-    if "ID" not in df1.columns or "ID" not in df2.columns:
-        columns_to_keep.update(["Gene", "AA Change"])
-
-    # Drop columns that are not in columns_to_compare and not 'ID'
-    cols1_to_drop = [
-        col
-        for col in df1.columns
-        if (col not in columns_to_compare) and (col not in columns_to_keep)
-    ]
-    cols2_to_drop = [
-        col
-        for col in df2.columns
-        if (col not in columns_to_compare) and (col not in columns_to_keep)
-    ]
-
-    df1.drop(columns=cols1_to_drop, inplace=True)
-    df2.drop(columns=cols2_to_drop, inplace=True)
-
-    # Drop columns that are not present in both dataframes
-    common_cols = set(df1.columns).intersection(set(df2.columns))
-    cols1_to_drop = [col for col in df1.columns if col not in common_cols]
-    cols2_to_drop = [col for col in df2.columns if col not in common_cols]
-
-    df1.drop(columns=cols1_to_drop, inplace=True)
-    df2.drop(columns=cols2_to_drop, inplace=True)
-
-    return cols1_to_drop, cols2_to_drop
 
 
 def check_columns_to_compare(df1, df2, columns_to_compare):
@@ -220,7 +158,12 @@ def get_file_differences(
     Modifies:   Nothing
     Returns:    Dictionary of differences and a dictionary of unique variants
     """
-    merged_df = pd.merge(df1, df2, on="ID", suffixes=("_file1", "_file2"))
+    df1_selected = df1[["ID"] + columns_to_compare]
+    df2_selected = df2[["ID"] + columns_to_compare]
+
+    merged_df = pd.merge(
+        df1_selected, df2_selected, on="ID", suffixes=("_file1", "_file2")
+    )
 
     differences = {}
     for col in columns_to_compare:
@@ -242,9 +185,7 @@ def get_file_differences(
             )
 
             # Mask for rows where one value is NaN and the other is not
-            nan_mask = (
-                merged_df[col_file1].isna() & ~merged_df[col_file2].isna()
-            ) | (
+            nan_mask = (merged_df[col_file1].isna() & ~merged_df[col_file2].isna()) | (
                 ~merged_df[col_file1].isna() & merged_df[col_file2].isna()
             )
 

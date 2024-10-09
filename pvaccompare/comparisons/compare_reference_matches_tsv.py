@@ -1,4 +1,5 @@
 from run_utils import *
+import logging
 
 
 class CompareReferenceMatchesTSV:
@@ -53,15 +54,15 @@ class CompareReferenceMatchesTSV:
 
         if max_hits_file1 > 1 or max_hits_file2 > 1:
             if max_hits_file1 > 1 and max_hits_file2 > 1:
-                print(
+                logging.error(
                     "ERROR: Duplicate unique records were found in both files. Writing number of hits only."
                 )
             elif max_hits_file1 > 1:
-                print(
+                logging.error(
                     "ERROR: Duplicate unique records were found in file 1. Writing number of hits only."
                 )
             else:
-                print(
+                logging.error(
                     "ERROR: Duplicate unique records were found in file 2. Writing number of hits only."
                 )
             return True

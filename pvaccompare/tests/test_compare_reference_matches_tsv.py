@@ -6,6 +6,7 @@ from runners.run_compare_reference_matches_tsv import main
 
 # To run the tests navigate to pvaccompare/ and run the following:
 # python -m unittest tests/test_compare_reference_matches_tsv.py
+# python -m unittest discover -s tests
 class TestRunCompareReferenceMatchesTSV(unittest.TestCase):
     def setUp(self):
         self.input_file1 = tempfile.NamedTemporaryFile(delete=False, suffix=".tsv")
@@ -82,11 +83,16 @@ class TestRunCompareReferenceMatchesTSV(unittest.TestCase):
         self.input_file1.close()
         self.input_file2.close()
 
-        main(
-            self.input_file1.name,
-            self.input_file2.name,
-            self.output_file.name,
-            self.columns_to_compare,
+        with self.assertLogs(level="INFO") as log:
+            main(
+                self.input_file1.name,
+                self.input_file2.name,
+                self.output_file.name,
+                self.columns_to_compare,
+            )
+        self.assertIn(
+            "ERROR:root:ERROR: Duplicate unique records were found in file 2. Writing number of hits only.",
+            log.output,
         )
 
         self.output_file.seek(0)

@@ -6,6 +6,7 @@ from runners.run_compare_yml import main
 
 # To run the tests navigate to pvaccompare/ and run the following:
 # python -m unittest tests/test_compare_yml.py
+# python -m unittest discover -s tests
 class TestRunCompareYML(unittest.TestCase):
     def setUp(self):
         self.input_file1 = tempfile.NamedTemporaryFile(delete=False, suffix=".yml")

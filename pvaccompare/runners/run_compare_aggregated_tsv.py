@@ -14,23 +14,20 @@ def main(input_file1, input_file2, output_file, columns_to_compare):
         input_file1, input_file2, output_file, columns_to_compare
     )
     check_column_formatting(comparer.df1, comparer.df2)
+    comparer.check_id()
 
-    cols1_to_drop, cols2_to_drop = drop_useless_columns(
+    columns_dropped_message = output_dropped_cols(
         comparer.df1, comparer.df2, comparer.columns_to_compare
     )
-    columns_dropped_message = output_dropped_cols(cols1_to_drop, cols2_to_drop)
     comparer.columns_to_compare = check_columns_to_compare(
         comparer.df1, comparer.df2, comparer.columns_to_compare
     )
-    comparer.check_id(cols1_to_drop, cols2_to_drop)
 
     common_variants = get_common_variants(comparer.df1, comparer.df2)
     unique_variants_file1, unique_variants_file2 = get_unique_variants(
         comparer.df1, comparer.df2, common_variants
     )
 
-    if comparer.df1.shape != comparer.df2.shape:
-        comparer.df1, comparer.df2 = make_rows_equal(comparer.df1, comparer.df2)
     differences, unique_variants = get_file_differences(
         comparer.df1,
         comparer.df2,

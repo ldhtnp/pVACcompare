@@ -1,0 +1,22 @@
+
+============================== AGGREGATED TSV COMPARISON ==============================
+
+
+
+/* Differences Summary */
+-----------------------------
+Total number of variants: 18
+Number of common variants: 18
+Number of variants unique to file 1: 0
+Number of variants unique to file 2: 0
+-----
+Number of differences in Best Peptide: 1
+
+
+============[ DIFFERENCES IN BEST PEPTIDE ]============
+
+
+ID Format: 'Gene (AA_Change)'
+
+ID	File 1	File 2
+SIX4 (E23Q):	QENGMQSA	->	QENCMQSA

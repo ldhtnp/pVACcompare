@@ -1,4 +1,5 @@
 from run_utils import *
+import logging
 
 
 class CompareAggregatedTSV:
@@ -12,23 +13,21 @@ class CompareAggregatedTSV:
         self.ID_replacement_cols = ["Gene", "AA Change"]
         self.columns_to_compare = columns_to_compare
 
-    def check_id(self, cols1_to_drop, cols2_to_drop):
+    def check_id(self):
         """
         Purpose:    Replace ID with Gene-AA_change if needed
         Modifies:   self.contains_id, self.replaced_id
         Returns:    None
         """
-        if "ID" in cols1_to_drop or "ID" in cols2_to_drop:
+        if "ID" not in self.df1.columns or "ID" not in self.df2.columns:
             self.contains_id = False
-
-        if not self.contains_id:
             can_replace = True
             for col in self.ID_replacement_cols:
                 if col not in self.df1.columns or col not in self.df2.columns:
                     can_replace = False
             if can_replace:
                 self.combine_gene_and_AA_change()
-                print("\u2022", "Replaced ID with Gene and AA Change")
+                logging.info("\u2022 Replaced ID with Gene and AA Change")
                 self.replaced_id = True
 
     def combine_gene_and_AA_change(self):
