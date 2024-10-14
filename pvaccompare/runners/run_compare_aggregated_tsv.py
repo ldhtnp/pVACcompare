@@ -1,5 +1,6 @@
 from comparisons import CompareAggregatedTSV
 from run_utils import *
+import logging
 
 
 def main(input_file1, input_file2, output_file, columns_to_compare):
@@ -24,34 +25,37 @@ def main(input_file1, input_file2, output_file, columns_to_compare):
         comparer.df1, comparer.df2, comparer.columns_to_compare
     )
 
-    common_variants = get_common_variants(comparer.df1, comparer.df2)
-    unique_variants_file1, unique_variants_file2 = get_unique_variants(
-        comparer.df1, comparer.df2, common_variants
-    )
+    if check_identical_dataframes(comparer.df1, comparer.df2, comparer.columns_to_compare):
+        logging.info("The Aggregated TSV files are identical.")
+    else:
+        common_variants = get_common_variants(comparer.df1, comparer.df2)
+        unique_variants_file1, unique_variants_file2 = get_unique_variants(
+            comparer.df1, comparer.df2, common_variants
+        )
 
-    differences, unique_variants = get_file_differences(
-        comparer.df1,
-        comparer.df2,
-        comparer.columns_to_compare,
-        unique_variants_file1,
-        unique_variants_file2,
-        comparer.contains_id,
-    )
-    differences_summary = generate_differences_summary(
-        common_variants, unique_variants_file1, unique_variants_file2, differences
-    )
-    generate_comparison_report(
-        "Aggregated TSV",
-        id_format,
-        differences,
-        unique_variants,
-        comparer.input_file1,
-        comparer.input_file2,
-        comparer.output_path,
-        columns_dropped_message,
-        differences_summary,
-        comparer.replaced_id,
-    )
+        differences, unique_variants = get_file_differences(
+            comparer.df1,
+            comparer.df2,
+            comparer.columns_to_compare,
+            unique_variants_file1,
+            unique_variants_file2,
+            comparer.contains_id,
+        )
+        differences_summary = generate_differences_summary(
+            common_variants, unique_variants_file1, unique_variants_file2, differences
+        )
+        generate_comparison_report(
+            "Aggregated TSV",
+            id_format,
+            differences,
+            unique_variants,
+            comparer.input_file1,
+            comparer.input_file2,
+            comparer.output_path,
+            columns_dropped_message,
+            differences_summary,
+            comparer.replaced_id,
+        )
 
 
 if __name__ == "__main__":

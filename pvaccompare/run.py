@@ -4,8 +4,6 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG, format="%(message)s")
 
-# TODO: Speed up identical file comparison
-
 
 def define_parser():
     """

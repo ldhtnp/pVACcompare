@@ -267,6 +267,22 @@ def get_number_column_differences(differences):
     return num_col_differences
 
 
+def check_identical_dataframes(df1, df2, columns_to_compare):
+    """
+    Purpose:    Check if the specified dataframes are identical
+    Modifies:   Nothing
+    Returns:    True/False
+    """
+    try:
+        df1_selected = df1[columns_to_compare].fillna(-9999)
+        df2_selected = df2[columns_to_compare].fillna(-9999)
+
+        return (df1_selected == df2_selected).all(axis=None)
+    except ValueError:
+        # Handles case where dataframes don't have identical numbers of rows
+        return False
+
+
 def generate_differences_summary(
     common_variants, unique_variants_file1, unique_variants_file2, differences={}
 ):
@@ -312,57 +328,54 @@ def generate_comparison_report(
     Modifies:   Nothing
     Returns:    None
     """
-    if differences or unique_variants:
-        first_unique_variant1 = True
-        first_unique_variant2 = True
-        try:
-            with open(output_path, "a") as f:
+    first_unique_variant1 = True
+    first_unique_variant2 = True
+    try:
+        with open(output_path, "a") as f:
+            f.write(
+                f"\n\n============================== {tool.upper()} COMPARISON ==============================\n\n\n"
+            )
+            f.write(f"File 1: {input_file1}\n")
+            f.write(f"File 2: {input_file2}\n")
+            if columns_dropped_message != "":
+                f.write(f"\n{columns_dropped_message}")
+            if differences_summary != "":
+                f.write(differences_summary)
+
+            for col, diffs in differences.items():
                 f.write(
-                    f"\n\n============================== {tool.upper()} COMPARISON ==============================\n\n\n"
+                    f"\n\n============[ DIFFERENCES IN {col.upper()} ]============\n\n\n"
                 )
-                f.write(f"File 1: {input_file1}\n")
-                f.write(f"File 2: {input_file2}\n")
-                if columns_dropped_message != "":
-                    f.write(f"\n{columns_dropped_message}")
-                if differences_summary != "":
-                    f.write(differences_summary)
+                if replaced_id:
+                    f.write("ID Format: 'Gene (AA_Change)'\n\n")
+                else:
+                    f.write(f"ID Format: {id_format}\n\n")
+                f.write("ID\tFile 1\tFile 2\t(Line in File1, Line in File2)\n")
+                for diff in diffs:
+                    file1_value = diff.get(f"{col}_file1", "NOT FOUND")
+                    file1_line = diff.get("line_file1", "NOT FOUND")
+                    file2_value = diff.get(f"{col}_file2", "NOT FOUND")
+                    file2_line = diff.get("line_file2", "NOT FOUND")
+                    f.write(f"{diff['ID']}:\t{file1_value}\t->\t{file2_value}\t({file1_line}, {file2_line})\n")
 
-                for col, diffs in differences.items():
-                    f.write(
-                        f"\n\n============[ DIFFERENCES IN {col.upper()} ]============\n\n\n"
-                    )
-                    if replaced_id:
-                        f.write("ID Format: 'Gene (AA_Change)'\n\n")
+            if unique_variants:
+                f.write(f"\n\n============[ UNIQUE VARIANTS ]============\n\n\n")
+                if replaced_id:
+                    f.write("Variant Format: 'Gene (AA_Change)'\n\n")
+                else:
+                    f.write(f"Variant Format: {id_format}\n\n")
+                for diff in unique_variants:
+                    if diff["File 2"] == "":
+                        if first_unique_variant1:
+                            f.write("Variants Unique to File 1:\n")
+                            first_unique_variant1 = False
+                        f.write(f"\t{diff['File 1']}\n")
                     else:
-                        f.write(f"ID Format: {id_format}\n\n")
-                    f.write("ID\tFile 1\tFile 2\t(Line in File1, Line in File2)\n")
-                    for diff in diffs:
-                        file1_value = diff.get(f"{col}_file1", "NOT FOUND")
-                        file1_line = diff.get("line_file1", "NOT FOUND")
-                        file2_value = diff.get(f"{col}_file2", "NOT FOUND")
-                        file2_line = diff.get("line_file2", "NOT FOUND")
-                        f.write(f"{diff['ID']}:\t{file1_value}\t->\t{file2_value}\t({file1_line}, {file2_line})\n")
-
-                if unique_variants:
-                    f.write(f"\n\n============[ UNIQUE VARIANTS ]============\n\n\n")
-                    if replaced_id:
-                        f.write("Variant Format: 'Gene (AA_Change)'\n\n")
-                    else:
-                        f.write(f"Variant Format: {id_format}\n\n")
-                    for diff in unique_variants:
-                        if diff["File 2"] == "":
-                            if first_unique_variant1:
-                                f.write("Variants Unique to File 1:\n")
-                                first_unique_variant1 = False
-                            f.write(f"\t{diff['File 1']}\n")
-                        else:
-                            if first_unique_variant2:
-                                if not first_unique_variant1:
-                                    f.write("\n")
-                                f.write("Variants Unique to File 2:\n")
-                                first_unique_variant2 = False
-                            f.write(f"\t{diff['File 2']}\n")
-        except Exception as e:
-            raise Exception(f"Error writing differences to file: {e}")
-    else:
-        logging.info("The %s files are identical.", tool)
+                        if first_unique_variant2:
+                            if not first_unique_variant1:
+                                f.write("\n")
+                            f.write("Variants Unique to File 2:\n")
+                            first_unique_variant2 = False
+                        f.write(f"\t{diff['File 2']}\n")
+    except Exception as e:
+        raise Exception(f"Error writing differences to file: {e}")
